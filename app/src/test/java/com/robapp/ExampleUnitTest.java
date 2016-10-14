@@ -1,4 +1,4 @@
-package com.example.arthur.roboboapp;
+package com.robapp;
 
 import org.junit.Test;
 

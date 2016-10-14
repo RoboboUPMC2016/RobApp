@@ -1,4 +1,4 @@
-package com.example.arthur.roboboapp;
+package com.robapp;
 
 import com.mytechia.commons.framework.exception.InternalErrorException;
 import com.mytechia.robobo.framework.RoboboManager;

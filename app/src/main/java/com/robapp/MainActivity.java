@@ -1,20 +1,17 @@
-package com.example.arthur.roboboapp;
+package com.robapp;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import com.mytechia.robobo.framework.RoboboManager;
 import com.mytechia.robobo.framework.service.RoboboServiceHelper;
 import com.mytechia.robobo.rob.BluetoothRobInterfaceModule;
-
-import ch.qos.logback.core.net.SyslogOutputStream;
+import com.mytechia.robobo.rob.IRobInterfaceModule;
+import com.mytechia.robobo.rob.movement.IRobMovementModule;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,8 +22,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.mainactivitylayout);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setContentView(com.example.arthur.roboboapp.R.layout.mainactivitylayout);
+        Toolbar toolbar = (Toolbar) findViewById(com.example.arthur.roboboapp.R.id.toolbar);
         //setSupportActionBar(toolbar);
 
        /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -41,10 +38,18 @@ public class MainActivity extends AppCompatActivity {
         roboboHelper = new RoboboServiceHelper(this, new RoboboServiceHelper.Listener() {
             @Override
             public void onRoboboManagerStarted(RoboboManager roboboManager) {
-                System.out.println("RoboboManager Started");
-                System.out.println("YEEEEES");
-            }
+                try {
+                    dissmisProgressDial();
+                    System.out.println("AHAHAHAHAHA");
+                    IRobMovementModule mod = roboboManager.getModuleInstance(IRobMovementModule.class);
+                    IRobInterfaceModule mod2 = roboboManager.getModuleInstance(IRobInterfaceModule.class);
+                    mod2.getRobInterface().setOperationMode((byte)1);
+                    mod.moveForwardsTime(new Short("50"),10000);
 
+                } catch (Exception e) {
+                        System.out.println(e);
+                }
+            }
             @Override
             public void onError(String errorMsg) {
                 showErrorDialog(errorMsg);
@@ -56,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         options.putString(BluetoothRobInterfaceModule.ROBOBO_BT_NAME_OPTION, getIntent().
                 getStringExtra(BluetoothRobInterfaceModule.ROBOBO_BT_NAME_OPTION));
         roboboHelper.bindRoboboService(options);
-        dissmisProgressDial();
+
     }
 
     public static void setProgessDialog(ProgressDialog waitDial)
@@ -77,9 +82,9 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
-                builder.setTitle(R.string.ErrorDialogTitle).
+                builder.setTitle(com.example.arthur.roboboapp.R.string.ErrorDialogTitle).
                         setMessage(msg);
-                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(com.example.arthur.roboboapp.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish();

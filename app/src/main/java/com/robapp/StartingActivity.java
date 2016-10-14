@@ -1,19 +1,13 @@
-package com.example.arthur.roboboapp;
+package com.robapp;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
-import com.mytechia.robobo.framework.RoboboManager;
-import com.mytechia.robobo.framework.misc.shock.ShockDetectionModule;
-import com.mytechia.robobo.framework.service.RoboboServiceHelper;
 import com.mytechia.robobo.rob.BluetoothRobInterfaceModule;
-import com.mytechia.robobo.rob.IRobInterfaceModule;
-import com.mytechia.robobo.rob.movement.IRobMovementModule;
 
 public class StartingActivity extends Activity {
 
@@ -63,8 +57,8 @@ public class StartingActivity extends Activity {
             public void run() {
                 //wait to dialog shown during the startup of the framework and the bluetooth connection
                 ProgressDialog waitDialog = ProgressDialog.show(StartingActivity.this,
-                        getString(R.string.DialogConnexionTitle),
-                        getString(R.string.DialogConnexionMsg));
+                        getString(com.example.arthur.roboboapp.R.string.DialogConnexionTitle),
+                        getString(com.example.arthur.roboboapp.R.string.DialogConnexionMsg));
                 MainActivity.setProgessDialog(waitDialog);
             }
         });
@@ -81,9 +75,9 @@ public class StartingActivity extends Activity {
             public void run() {
                 AlertDialog.Builder builder = new AlertDialog.Builder(StartingActivity.this);
 
-                builder.setTitle(R.string.ErrorDialogTitle).
+                builder.setTitle(com.example.arthur.roboboapp.R.string.ErrorDialogTitle).
                         setMessage(msg);
-                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(com.example.arthur.roboboapp.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish();

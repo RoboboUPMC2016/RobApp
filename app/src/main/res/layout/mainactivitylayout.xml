@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.example.arthur.roboboapp.MainActivity">
+    tools:context="com.example.arthur.roboboapp.app.example.arthur.roboboapp.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -21,14 +21,29 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
-    <!--
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_menu_camera" />
--->
+        app:srcCompat="@drawable/ic_behavior"
+        app:backgroundTint="@android:color/holo_blue_dark"
+        app:elevation="0dp"
+        android:padding="0dp"
+        android:layout_height="100dp"
+        android:paddingEnd="0dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:paddingStart="0dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:adjustViewBounds="true"
+        app:fabSize="mini" />
+
+    <include layout="@layout/content_main"
+        android:layout_width="match_parent"
+        android:layout_height="452dp" />
+
 </android.support.design.widget.CoordinatorLayout>

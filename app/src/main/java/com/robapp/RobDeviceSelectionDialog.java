@@ -1,4 +1,4 @@
-package com.example.arthur.roboboapp;
+package com.robapp;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -9,8 +9,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Set;
 
 /** A pop-up dialog that asks the user to select a particular Robobo bluetooth device
@@ -31,9 +29,9 @@ public class RobDeviceSelectionDialog extends DialogFragment {
 
         if (robNames.length == 0) {
 
-            builder.setTitle(R.string.BluetoothDeviceSelectionTitle)
+            builder.setTitle(com.example.arthur.roboboapp.R.string.BluetoothDeviceSelectionTitle)
                     .setMessage("No device found or bluetooth disabled.")
-                    .setNegativeButton(getText(R.string.ok_msg), new DialogInterface.OnClickListener() {
+                    .setNegativeButton(getText(com.example.arthur.roboboapp.R.string.ok_msg), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             listener.bluetoothIsDisabled();
@@ -42,7 +40,7 @@ public class RobDeviceSelectionDialog extends DialogFragment {
 
         }
         else {
-            builder.setTitle(R.string.BluetoothDeviceSelectionTitle)
+            builder.setTitle(com.example.arthur.roboboapp.R.string.BluetoothDeviceSelectionTitle)
                     .setItems(robNames, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
 
