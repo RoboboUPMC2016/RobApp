@@ -1,4 +1,4 @@
-package com.robapp;
+package com.robapp.dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

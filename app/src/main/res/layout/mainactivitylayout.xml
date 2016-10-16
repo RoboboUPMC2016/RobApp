@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.example.arthur.roboboapp.app.example.arthur.roboboapp.MainActivity">
+    tools:context="com.robapp.activity.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -23,12 +23,54 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
-        android:layout_width="100dp"
+        android:layout_width="70dp"
         android:minHeight="0dp"
         android:minWidth="0dp"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_behavior"
+        app:srcCompat="@drawable/ic_logo"
+        app:backgroundTint="@android:color/holo_blue_dark"
+        app:elevation="0dp"
+        android:padding="0dp"
+        android:layout_height="100dp"
+        android:paddingEnd="0dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:paddingStart="0dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:adjustViewBounds="true"
+        app:fabSize="mini" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fileExpButton"
+        android:layout_width="60dp"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@drawable/ic_addbehvior"
+        app:backgroundTint="@android:color/holo_blue_dark"
+        app:elevation="0dp"
+        android:padding="0dp"
+        android:layout_height="100dp"
+        android:paddingEnd="0dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:paddingStart="0dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:adjustViewBounds="true"
+        app:fabSize="mini" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/cloudButton"
+        android:layout_width="60dp"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@drawable/ic_download"
         app:backgroundTint="@android:color/holo_blue_dark"
         app:elevation="0dp"
         android:padding="0dp"

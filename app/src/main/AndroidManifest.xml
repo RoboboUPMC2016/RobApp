@@ -4,6 +4,14 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.STORAGE" />
+
+
     <application>
         <uses-sdk
             android:minSdkVersion="19"
@@ -14,16 +22,24 @@
         android:supportsRtl="true"
         android:theme="@style/AppCompat">
         <activity
-            android:name="com.robapp.StartingActivity"
+            android:name="com.robapp.activity.StartingActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.robapp.MainActivity"
+            android:name="com.robapp.activity.MainActivity"
+            android:theme="@style/Theme.AppCompat"></activity>
+
+        <activity android:name="com.robapp.activity.FileExplorerActivity"
             android:theme="@style/Theme.AppCompat">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.robapp.activity.MainActivity" />
+
         </activity>
     </application>
 

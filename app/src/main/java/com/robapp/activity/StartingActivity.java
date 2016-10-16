@@ -1,4 +1,4 @@
-package com.robapp;
+package com.robapp.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.mytechia.robobo.rob.BluetoothRobInterfaceModule;
+import com.robapp.dialog.RobDeviceSelectionDialog;
 
 public class StartingActivity extends Activity {
 
