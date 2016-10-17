@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import com.example.arthur.roboboapp.R;
+import com.robapp.R;
 import com.mytechia.robobo.framework.RoboboManager;
 import com.mytechia.robobo.framework.service.RoboboServiceHelper;
 import com.mytechia.robobo.rob.BluetoothRobInterfaceModule;
@@ -30,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(com.example.arthur.roboboapp.R.layout.mainactivitylayout);
-        Toolbar toolbar = (Toolbar) findViewById(com.example.arthur.roboboapp.R.id.toolbar);
+        setContentView(R.layout.mainactivitylayout);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
 
        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -42,12 +42,13 @@ public class MainActivity extends AppCompatActivity {
             public void onRoboboManagerStarted(RoboboManager roboboManager) {
                 try {
                     dissmisProgressDial();
+                    /*
                     System.out.println("AHAHAHAHAHA");
                     IRobMovementModule mod = roboboManager.getModuleInstance(IRobMovementModule.class);
                     IRobInterfaceModule mod2 = roboboManager.getModuleInstance(IRobInterfaceModule.class);
                     mod2.getRobInterface().setOperationMode((byte)1);
                     mod.moveForwardsTime(new Short("50"),10000);
-
+                    */
                 } catch (Exception e) {
                         System.out.println(e);
                 }
@@ -84,9 +85,9 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
-                builder.setTitle(com.example.arthur.roboboapp.R.string.ErrorDialogTitle).
+                builder.setTitle(R.string.ErrorDialogTitle).
                         setMessage(msg);
-                builder.setPositiveButton(com.example.arthur.roboboapp.R.string.ok, new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                          dialog.dismiss();

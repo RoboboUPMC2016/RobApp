@@ -1,18 +1,20 @@
 package com.robapp.activity;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
 import android.content.Intent;
 import android.os.Environment;
+import android.support.v4.content.ContextCompat;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ViewFlipper;
 
-import com.example.arthur.roboboapp.R;
+import com.robapp.R;
 import com.robapp.adapter.FileExplorerAdapter;
 import com.robapp.utils.Utils;
 

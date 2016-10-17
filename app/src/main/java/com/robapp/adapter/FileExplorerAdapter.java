@@ -8,13 +8,16 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.arthur.roboboapp.R;
+import com.robapp.R;
 import com.robapp.listener.FileExplorerListener;
 import com.robapp.listener.FileExplorerLongListener;
 import com.robapp.activity.FileExplorerActivity;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 
 public class FileExplorerAdapter extends BaseAdapter {
@@ -39,11 +42,8 @@ public class FileExplorerAdapter extends BaseAdapter {
         files = new ArrayList<File>();
         files.add(this.dir);
 
-        if(this.dir.listFiles() == null)
-            return;
 
-        for(File f : this.dir.listFiles())
-            files.add(f);
+        files.addAll(FileExplorerAdapter.filter(dir,"java"));
     }
 
     @Override
@@ -80,7 +80,7 @@ public class FileExplorerAdapter extends BaseAdapter {
 
         File f = files.get(position);
         String path = f.getAbsolutePath();
-        String root = "/storage";
+        String root = "/";
         System.out.println("===> "+path);
 
 
@@ -127,10 +127,42 @@ public class FileExplorerAdapter extends BaseAdapter {
         files.clear();
         files.add(dir);
 
-        if(this.dir.listFiles() == null)
-            return;
+       files.addAll(FileExplorerAdapter.filter(dir,"java"));
 
-        for(File f : this.dir.listFiles())
-            files.add(f);
+
+    }
+
+    private static ArrayList<File> filter(File dir, String ext)
+    {
+        ArrayList<File> out = new ArrayList<File>();
+        File [] files = dir.listFiles();
+
+        if(files == null)
+            return out;
+
+        for(int i=0;i< files.length;i++)
+        {
+            String fExt="";
+            File f = files[i];
+
+            if(f.isDirectory())
+                out.add(f);
+            else if (f.isFile())
+            {
+                StringTokenizer tk = new StringTokenizer(f.getName(),".");
+                fExt = tk.nextToken();
+                fExt = tk.nextToken();
+
+                if(tk.hasMoreTokens())
+                    continue;
+                if(fExt.compareTo(ext) == 0)
+                {
+                    out.add(f);
+                }
+
+            }
+
+        }
+        return out;
     }
 }

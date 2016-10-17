@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.mytechia.robobo.rob.BluetoothRobInterfaceModule;
+import com.robapp.R;
 import com.robapp.dialog.RobDeviceSelectionDialog;
 
 public class StartingActivity extends Activity {
@@ -58,8 +59,8 @@ public class StartingActivity extends Activity {
             public void run() {
                 //wait to dialog shown during the startup of the framework and the bluetooth connection
                 ProgressDialog waitDialog = ProgressDialog.show(StartingActivity.this,
-                        getString(com.example.arthur.roboboapp.R.string.DialogConnexionTitle),
-                        getString(com.example.arthur.roboboapp.R.string.DialogConnexionMsg));
+                        getString(R.string.DialogConnexionTitle),
+                        getString(R.string.DialogConnexionMsg));
                 MainActivity.setProgessDialog(waitDialog);
             }
         });
@@ -76,9 +77,9 @@ public class StartingActivity extends Activity {
             public void run() {
                 AlertDialog.Builder builder = new AlertDialog.Builder(StartingActivity.this);
 
-                builder.setTitle(com.example.arthur.roboboapp.R.string.ErrorDialogTitle).
+                builder.setTitle(R.string.ErrorDialogTitle).
                         setMessage(msg);
-                builder.setPositiveButton(com.example.arthur.roboboapp.R.string.ok, new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish();

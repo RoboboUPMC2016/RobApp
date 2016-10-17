@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import com.example.arthur.roboboapp.R;
+import com.robapp.R;
 import com.robapp.activity.FileExplorerActivity;
 
 import static android.view.animation.AnimationUtils.*;
