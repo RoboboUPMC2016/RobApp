@@ -7,19 +7,6 @@
     android:fitsSystemWindows="true"
     tools:context="com.robapp.activity.MainActivity">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-    </android.support.design.widget.AppBarLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -87,5 +74,25 @@
     <include layout="@layout/content_main"
         android:layout_width="match_parent"
         android:layout_height="452dp" />
+
+    <Button
+        android:text="Demarrer"
+        android:layout_marginBottom="200dp"
+        android:layout_gravity="center|center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/mainButton" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_gravity="center|center"
+        android:id="@+id/spinnerBehavior"
+        android:dropDownWidth="wrap_content"
+
+        />
+
 
 </android.support.design.widget.CoordinatorLayout>

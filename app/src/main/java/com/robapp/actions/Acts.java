@@ -26,8 +26,12 @@ public class Acts implements Actions  {
     @Override
     public void moveForward(int i) {
         try {
-            modMove.moveForwardsTime(new Short("50"),i*1000);
+            modMove.moveForwardsTime(new Short("100"),i*1000);
+            Thread.sleep(i*1000);
         } catch (InternalErrorException e) {
+            e.printStackTrace();
+        }
+        catch(Exception e){
             e.printStackTrace();
         }
     }
@@ -35,17 +39,24 @@ public class Acts implements Actions  {
     @Override
     public void moveBackward(int i) {
         try {
-            modMove.moveBackwardsTime(new Short("50"),i*1000);
+            modMove.moveBackwardsTime(new Short("100"),i*1000);
+            Thread.sleep(i*1000);
         } catch (InternalErrorException e) {
             e.printStackTrace();
+        }  catch(Exception e){
+            e.printStackTrace();
         }
+
     }
 
     @Override
     public void turnRight() {
         try {
-            modMove.turnRightAngle(new Short("50"),90);
+            modMove.turnRightAngle(new Short("100"),500);
+            Thread.sleep(300);
         } catch (InternalErrorException e) {
+            e.printStackTrace();
+        }  catch(Exception e){
             e.printStackTrace();
         }
     }
@@ -53,8 +64,11 @@ public class Acts implements Actions  {
     @Override
     public void turnLeft() {
         try {
-            modMove.turnLeftAngle(new Short("50"), 90);
+            modMove.turnRightAngle(new Short("100"),500);
+            Thread.sleep(300);
         } catch (InternalErrorException e) {
+            e.printStackTrace();
+        }  catch(Exception e){
             e.printStackTrace();
         }
     }

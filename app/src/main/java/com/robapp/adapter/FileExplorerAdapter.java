@@ -80,7 +80,7 @@ public class FileExplorerAdapter extends BaseAdapter {
 
         File f = files.get(position);
         String path = f.getAbsolutePath();
-        String root = "/";
+        String root = "/storage";
         System.out.println("===> "+path);
 
 
