@@ -4,12 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.mytechia.robobo.framework.RoboboManager;
-import com.robapp.behaviors.BehaviorFileItem;
-import com.robapp.behaviors.DummyBehavior;
-import com.robapp.behaviors.NativeBehaviorItem;
-import com.robapp.behaviors.RoundTripBehavior;
-import com.robapp.behaviors.SquareTripBehavior;
-import com.robapp.interfaces.BehaviorItemI;
+import com.robapp.behaviors.item.BehaviorFileItem;
+import com.robapp.behaviors.natives.DummyBehavior;
+import com.robapp.behaviors.item.NativeBehaviorItem;
+import com.robapp.behaviors.natives.RoundTripBehavior;
+import com.robapp.behaviors.natives.SquareTripBehavior;
+import com.robapp.behaviors.interfaces.BehaviorItemI;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,6 +25,9 @@ public class Utils {
 
     private static Activity current = null;
     private static RoboboManager roboboManager;
+    private static String robName = null;
+    private static boolean start = true;
+
 
     public static void setCurrentActivity(Activity current)
     {
@@ -36,6 +39,36 @@ public class Utils {
         return current;
     }
 
+    static public void setRoboboManager(RoboboManager roboboManager)
+    {
+        Utils.roboboManager = roboboManager;
+    }
+
+    static public RoboboManager getRoboboManager()
+    {
+        return roboboManager;
+    }
+
+    static public void setRobBluetoothName(String robName)
+    {
+        Utils.robName = robName;
+    }
+
+    static public String getRobBluetoothName()
+    {
+        return robName;
+    }
+
+    static public boolean isStart()
+    {
+        if(Utils.start == true)
+        {
+            Utils.start = false;
+            return true;
+        }
+
+        return start;
+    }
     static public String moveFileToDir(File f,File dir) throws Exception
     {
         File newF = new File(dir.getAbsolutePath()+"/"+ f.getName());
@@ -63,13 +96,5 @@ public class Utils {
         return items;
     }
 
-    static public void setRoboboManager(RoboboManager roboboManager)
-    {
-        Utils.roboboManager = roboboManager;
-    }
 
-    static public RoboboManager getRoboboManager()
-    {
-        return roboboManager;
-    }
 }
