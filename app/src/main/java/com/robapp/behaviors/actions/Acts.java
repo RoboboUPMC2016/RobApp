@@ -26,7 +26,7 @@ public class Acts implements Actions  {
     @Override
     public void moveForward(int i) {
         try {
-            modMove.moveForwardsTime(new Short("100"),i*1000);
+                modMove.moveForwardsTime(new Short("100"),i*1000);
             Thread.sleep(i*1000);
         } catch (InternalErrorException e) {
             e.printStackTrace();

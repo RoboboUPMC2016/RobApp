@@ -68,11 +68,9 @@ public class RobDeviceSelectionDialog extends DialogFragment {
 
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (!mBluetoothAdapter.isEnabled()) {
-            //bluetooth disabled
             return new String[0];
         }
         else {
-            //bluetooth enabled
             Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
 
             String[] devicesNames = new String[pairedDevices.size()];
@@ -87,7 +85,6 @@ public class RobDeviceSelectionDialog extends DialogFragment {
 
     }
 
-
     public void setListener(Listener listener) {
         this.listener = listener;
     }
@@ -96,11 +93,6 @@ public class RobDeviceSelectionDialog extends DialogFragment {
         this.listener = null;
     }
 
-
-    /** Receives notifications of the selection of a Robobo bluetooth device
-     * from the selection dialog.
-     *
-     */
     public interface Listener {
 
 

@@ -41,7 +41,7 @@ public class FileExplorerAdapter extends BaseAdapter {
         files.add(this.dir);
 
 
-        files.addAll(FileExplorerAdapter.filter(dir,"java"));
+        files.addAll(FileExplorerAdapter.filter(dir,"all"));
     }
 
     @Override
@@ -125,7 +125,7 @@ public class FileExplorerAdapter extends BaseAdapter {
         files.clear();
         files.add(dir);
 
-       files.addAll(FileExplorerAdapter.filter(dir,"java"));
+       files.addAll(FileExplorerAdapter.filter(dir,"dex"));
 
 
     }
@@ -147,12 +147,14 @@ public class FileExplorerAdapter extends BaseAdapter {
                 out.add(f);
             else if (f.isFile())
             {
-                StringTokenizer tk = new StringTokenizer(f.getName(),".");
-                fExt = tk.nextToken();
-                fExt = tk.nextToken();
-
-                if(tk.hasMoreTokens())
+                if(ext.equals("all"))
+                {
+                    out.add(f);
                     continue;
+                }
+                StringTokenizer tk = new StringTokenizer(f.getName(),".");
+                while(tk.hasMoreTokens())
+                    fExt = tk.nextToken();
                 if(fExt.compareTo(ext) == 0)
                 {
                     out.add(f);

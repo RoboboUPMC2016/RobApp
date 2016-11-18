@@ -1,4 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_bluetooth"
+            android:icon="@drawable/ic_menu_bluetooth"
+            android:title="Connexion" />
+        <item
+            android:id="@+id/nav_camera"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Camera" />
+        <item
+            android:id="@+id/nav_manage"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Gérer" />
+        <item
+            android:id="@+id/nav_share"
+            android:icon="@drawable/ic_menu_send"
+            android:title="QRCode" />
+        <item
+            android:id="@+id/nav_download"
+            android:icon="@drawable/ic_menu_download"
+            android:title="Download" />
+        <item
+            android:id="@+id/nav_reset"
+            android:icon="@drawable/ic_menu_reset"
+            android:title="Reset" />
+        <item
+            android:id="@+id/nav_behavior"
+            android:title="Comportements"
+            android:icon="@drawable/ic_menu_behavior"/>
+
+    </group>
 </menu>

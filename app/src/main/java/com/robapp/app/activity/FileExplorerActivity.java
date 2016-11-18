@@ -10,6 +10,8 @@ import android.widget.ViewFlipper;
 
 import com.robapp.R;
 import com.robapp.app.adapter.FileExplorerAdapter;
+import com.robapp.app.dialog.BehaviorSelectionDialog;
+import com.robapp.behaviors.interfaces.BehaviorItemI;
 import com.robapp.utils.Utils;
 
 import java.io.File;
@@ -17,7 +19,7 @@ import java.io.File;
 
 
 
-public class FileExplorerActivity extends MainActivity {
+public class FileExplorerActivity extends BaseActivity {
 
     private ViewFlipper viewFlipper;
 
@@ -31,7 +33,8 @@ public class FileExplorerActivity extends MainActivity {
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.fileexplorer_activity);
+        setContentView(R.layout.activity_file_explorer);
+        setupDrawer();
 
         root = new File("/storage");
         adapter = new FileExplorerAdapter(root,this);
@@ -39,24 +42,31 @@ public class FileExplorerActivity extends MainActivity {
         ListView list = (ListView) findViewById(R.id.listView7);
         list.setAdapter(adapter);
 
-        Intent intent = new Intent(this,MainActivity.class);
+        Intent intent = new Intent(this,BehaviorActivity.class);
     }
 
-   /* @Override
-    public void onBackPressed()
-    {
-            goBack();
-    }*/
 
     public void fileChoosen(File f)
     {
 
-        File dir = getDir("behavior",MODE_PRIVATE);
-
         try {
-            Utils.moveFileToDir(f, dir);
-            intent.putExtra("Selected",f.getName());
-            goBack();
+            Utils.moveBehaviorDownloaded(getApplicationContext(),f);
+
+            final BehaviorSelectionDialog dialog = new BehaviorSelectionDialog();
+            dialog.setListener(new BehaviorSelectionDialog.Listener() {
+                @Override
+                public void behaviorSelected(BehaviorItemI item) {
+                    selectedBehavior = item;
+                    Intent intent = new Intent(Utils.getCurrentActivity(),BehaviorActivity.class);
+                    Utils.getCurrentActivity().startActivity(intent);
+                }
+
+                public void selectionCancelled()
+                {}
+            });
+
+            dialog.show(getFragmentManager(),"Selection Comportement");
+
         }
         catch(Exception e) {
             String msg = "Probleme lors de la copie du ficher " + f.getName();

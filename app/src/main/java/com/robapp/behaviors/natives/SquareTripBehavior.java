@@ -4,7 +4,7 @@ import robdev.*;
 
 public class SquareTripBehavior implements Behavior {
 
-	public static final int ROUND_TRIP_NUMBER = 5;
+	public static final int ROUND_TRIP_NUMBER = 1;
 
 	public void run(Actions actions) {
 
@@ -14,7 +14,7 @@ public class SquareTripBehavior implements Behavior {
 
 			for(int j=0;j<4;j++){
 				actions.moveForward(1);
-				actions.turnLeft();
+				actions.turnRight();
 			}
 
 			if(i++ >= ROUND_TRIP_NUMBER)

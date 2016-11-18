@@ -14,14 +14,15 @@
     <application>
         <uses-sdk
             android:minSdkVersion="19"
-            android:targetSdkVersion="19" />
+            android:targetSdkVersion="19" /><![CDATA[
         android:allowBackup="true"
         android:icon="@drawable/ic_logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppCompat">
+        ]]>
         <activity
-            android:name="com.robapp.activity.StartingActivity"
+            android:name=".app.activity.BehaviorActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,15 +30,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.robapp.activity.MainActivity"
-            android:theme="@style/Theme.AppCompat"></activity>
 
-        <activity android:name="com.robapp.activity.FileExplorerActivity"
-            android:theme="@style/Theme.AppCompat">
+        <activity android:name=".app.activity.FileExplorerActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.robapp.activity.MainActivity" />
+                android:value=".app.activity.BehaviorActivity" />
 
         </activity>
     </application>

@@ -6,8 +6,8 @@ import android.content.DialogInterface;
 import android.os.Handler;
 import android.view.View;
 
-import com.robapp.app.activity.MainActivity;
-import com.robapp.app.interfaces.BehaviorItemI;
+import com.robapp.app.activity.BehaviorActivity;
+import com.robapp.behaviors.interfaces.BehaviorItemI;
 
 /**
  * Created by Arthur on 19/10/2016.
@@ -19,7 +19,7 @@ public class Launcher extends ProgressDialog {
     private Handler handler;
     private Runnable run;
     private BehaviorItemI behavior;
-    private MainActivity act;
+    private BehaviorActivity act;
     boolean started = false;
     Thread t;
 
@@ -27,7 +27,7 @@ public class Launcher extends ProgressDialog {
         super(context);
         this.timed = timed;
         this.behavior = behavior;
-        this.act = (MainActivity)context;
+        this.act = (BehaviorActivity)context;
         this.setTitle(" Lancement ");
         started = false;
         this.setButton(BUTTON_POSITIVE,"Lancer",new DialogInterface.OnClickListener() {

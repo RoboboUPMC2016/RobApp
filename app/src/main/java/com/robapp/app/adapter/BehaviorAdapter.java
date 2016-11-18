@@ -4,19 +4,23 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.robapp.R;
-import com.robapp.app.activity.MainActivity;
-import com.robapp.behaviors.NativeBehaviorItem;
-import com.robapp.app.interfaces.BehaviorItemI;
+import com.robapp.app.activity.BaseActivity;
+import com.robapp.behaviors.item.NativeBehaviorItem;
+import com.robapp.behaviors.interfaces.BehaviorItemI;
 
 import com.robapp.utils.Utils;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -26,22 +30,18 @@ import java.util.ArrayList;
 public class BehaviorAdapter extends BaseAdapter {
 
     ArrayList<BehaviorItemI>items;
-    MainActivity act;
     private static LayoutInflater inflater;
     BehaviorItemI selectedItem;
-    Spinner spinner;
+    Context context;
 
-    public BehaviorAdapter(Context cont)
-    {
-        act = (MainActivity)cont;
+    public BehaviorAdapter(Context cont) {
 
-        inflater = (LayoutInflater) cont
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.context = cont;
+        inflater = (LayoutInflater) (LayoutInflater.from(context));
+        items = Utils.getAllItem();
 
-        items = Utils.getAllItem(cont);
-
-        spinner = (Spinner)act.findViewById(R.id.spinnerBehavior);
         selectedItem = items.get(0);
+
     }
 
     @Override
@@ -50,7 +50,7 @@ public class BehaviorAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public BehaviorItemI getItem(int position) {
         return items.get(position);
     }
 
@@ -62,23 +62,21 @@ public class BehaviorAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
-        View vi = convertView;
 
-        if (vi == null)
-            vi = inflater.inflate(R.layout.behavioritem, null);
+            convertView = inflater.inflate(R.layout.behavioritem,null);
 
-        ImageView view = (ImageView) vi.findViewById(R.id.imgB);
+        BehaviorItemI item =  getItem(position);
+        ImageView img = (ImageView) convertView.findViewById(R.id.imgB);
+        TextView txt = (TextView) convertView.findViewById(R.id.nameB);
 
-        final BehaviorItemI item = (BehaviorItemI) getItem(position);
         if(item instanceof NativeBehaviorItem)
-            view.setImageResource(R.drawable.ic_native);
+            img.setImageResource(R.drawable.ic_native);
         else
-            view.setImageResource(R.drawable.ic_downloaded);
+            img.setImageResource(R.drawable.ic_downloaded);
 
-        TextView text = (TextView) vi.findViewById(R.id.nameB);
-        text.setText(item.getName());
+        txt.setText(item.getName());
 
-        return vi;
+        return convertView;
     }
 
     public BehaviorItemI getSelectedItem()
@@ -86,4 +84,8 @@ public class BehaviorAdapter extends BaseAdapter {
         return selectedItem;
     }
 
+    public void setSelectedItem(int i)
+    {
+        selectedItem = getItem(i);
+    }
 }

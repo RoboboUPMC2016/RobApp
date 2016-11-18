@@ -7,5 +7,6 @@ public interface BehaviorItemI extends Runnable {
 
     public String getName();
 
+    public String toString();
 
 }

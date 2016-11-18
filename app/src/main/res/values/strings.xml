@@ -3,8 +3,11 @@
     <string name="BluetoothDeviceSelectionTitle">Rob Selection</string>
     <string name="DialogConnexionTitle">Connexion</string>
     <string name="DialogConnexionMsg">Patienter</string>
-    <string name="ErrorDialogTitle">Ouuups</string>string>
+    <string name="ErrorDialogTitle">Ouuups</string>
     <string name="ok">Ok</string>
-    <string name="title_activity_starting">StartingActivity</string>string>
+    <string name="title_activity_starting">StartingActivity</string>
+    <string name="drawer_open">RobApp Menu</string>
+    <string name="drawer_close">RobApp</string>
+    <string name="option">RobApp</string>
 
 </resources>

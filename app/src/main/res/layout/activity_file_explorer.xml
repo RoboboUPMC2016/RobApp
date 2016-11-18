@@ -9,7 +9,7 @@
     tools:openDrawer="start">
 
     <include
-        layout="@layout/app_bar"
+        layout="@layout/app_bar_file_explorer"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -23,3 +23,4 @@
         app:menu="@menu/menu" />
 
 </android.support.v4.widget.DrawerLayout>
+

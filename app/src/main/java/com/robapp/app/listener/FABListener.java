@@ -39,7 +39,7 @@ public class FABListener implements View.OnClickListener {
 
         onClick = loadAnimation(act,R.anim.onclick);
 
-        fileExpButton = (FloatingActionButton)act.findViewById(R.id.fileExpButton);
+        /* = (FloatingActionButton)act.findViewById(R.id.);
         fileExpButton.setVisibility(View.GONE);
         fileExpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,7 +48,7 @@ public class FABListener implements View.OnClickListener {
             }
         });
 
-        cloudButton= (FloatingActionButton)act.findViewById(R.id.cloudButton);
+        cloudButton= (FloatingActionButton)act.findViewById(R.id.spinnerBehavior);
         cloudButton.setVisibility(View.GONE);
 
         fade_in_f = loadAnimation(act, R.anim.fade_in);
@@ -68,7 +68,7 @@ public class FABListener implements View.OnClickListener {
         fade_out_c.setAnimationListener(
                 new AnimationListenerFadeOut(cloudButton));
 
-
+*/
 
         expended = false;
     }

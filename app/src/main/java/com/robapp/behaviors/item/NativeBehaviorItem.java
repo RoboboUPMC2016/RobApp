@@ -3,7 +3,7 @@ package com.robapp.behaviors.item;
 import com.mytechia.robobo.rob.IRobInterfaceModule;
 import com.mytechia.robobo.rob.movement.IRobMovementModule;
 import com.robapp.behaviors.actions.Acts;
-import com.robapp.app.interfaces.BehaviorItemI;
+import com.robapp.behaviors.interfaces.BehaviorItemI;
 import com.robapp.utils.Utils;
 
 import robdev.Actions;
@@ -45,5 +45,11 @@ public class NativeBehaviorItem implements BehaviorItemI {
             System.out.println();
         }
 
+    }
+
+    @Override
+    public String toString()
+    {
+        return getName();
     }
 }

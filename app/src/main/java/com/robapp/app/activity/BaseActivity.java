@@ -3,9 +3,11 @@ package com.robapp.app.activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -13,42 +15,66 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
+import com.mytechia.robobo.framework.service.RoboboServiceHelper;
+import com.mytechia.robobo.rob.BluetoothRobInterfaceModule;
+import com.robapp.R;
 import com.robapp.app.adapter.BehaviorAdapter;
-import com.robapp.app.dialog.RobSelectionDialog;
+import com.robapp.app.dialog.BehaviorSelectionDialog;
+import com.robapp.app.dialog.RobDeviceSelectionDialog;
+import com.robapp.behaviors.interfaces.BehaviorItemI;
+import com.robapp.behaviors.listener.RobHelperListener;
 import com.robapp.utils.Utils;
+
+import java.util.ArrayList;
+
+/**
+ * Created by Arthur on 03/11/2016.
+ */
 
 public class BaseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private boolean camera = false;
-    private NavigationView navigationView;
+    protected static boolean initied = false;
+    public static boolean robStarted = false;
+
+    protected RoboboServiceHelper roboboHelper;
+    private ProgressDialog dial;
     private BehaviorAdapter adapter;
+
+    protected static BehaviorItemI selectedBehavior;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    public void setupDrawer()
+    {
         Utils.setCurrentActivity(this);
+        if(!initied)
+        {
+            Utils.init(getApplicationContext());
+            selectedBehavior = Utils.getAllItem().get(0);
+            initied = true;
+        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,R.string.drawer_open, R.string.drawer_close);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        adapter = new BehaviorAdapter(this);
-
-        Spinner list = (Spinner) findViewById(R.id.spinnerBehavior);
-        list.setAdapter(adapter);
-
-        if(Utils.isStart() && Utils.getRobBluetoothName() == null)
-            showRoboboDeviceSelectionDialog();
     }
 
     @Override
@@ -64,7 +90,7 @@ public class BaseActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.base, menu);
+        getMenuInflater().inflate(R.menu.options, menu);
         return true;
     }
 
@@ -74,6 +100,12 @@ public class BaseActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -83,19 +115,36 @@ public class BaseActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+
         if (id == R.id.nav_camera) {
             // Handle the camera action
         } else if (id == R.id.nav_bluetooth) {
+            robStarted = false;
             showRoboboDeviceSelectionDialog();
-        } else if (id == R.id.nav_camera) {
-            Snackbar.make(navigationView, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
 
-        } else if (id == R.id.nav_download) {
-                //TODO
+
+        } else if (id == R.id.nav_manage) {
+            Intent intent = new Intent(Utils.getCurrentActivity(),FileExplorerActivity.class);
+            Utils.getCurrentActivity().startActivity(intent);
+
         } else if (id == R.id.nav_share) {
-                //TODO
+
+        } else if (id == R.id.nav_behavior) {
+           final BehaviorSelectionDialog dialog = new BehaviorSelectionDialog();
+            dialog.setListener(new BehaviorSelectionDialog.Listener() {
+                @Override
+                public void behaviorSelected(BehaviorItemI item) {
+                   selectedBehavior = item;
+                    Intent intent = new Intent(Utils.getCurrentActivity(),BehaviorActivity.class);
+                    Utils.getCurrentActivity().startActivity(intent);
+                }
+
+                public void selectionCancelled()
+                {}
+            });
+            dialog.show(getFragmentManager(),"Selection Comportement");
         }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -104,8 +153,8 @@ public class BaseActivity extends AppCompatActivity
 
     protected void showRoboboDeviceSelectionDialog() {
 
-        RobSelectionDialog dialog = new RobSelectionDialog();
-        dialog.setListener(new RobSelectionDialog.Listener() {
+        RobDeviceSelectionDialog dialog = new RobDeviceSelectionDialog();
+        dialog.setListener(new RobDeviceSelectionDialog.Listener() {
             @Override
             public void roboboSelected(String roboboName) {
 
@@ -116,7 +165,7 @@ public class BaseActivity extends AppCompatActivity
 
             @Override
             public void selectionCancelled() {
-                showErrorConnexionDialog("No device selected.");
+                showErrorDialog("No device selected.");
             }
 
             @Override
@@ -135,21 +184,28 @@ public class BaseActivity extends AppCompatActivity
             @Override
             public void run() {
                 //wait to dialog shown during the startup of the framework and the bluetooth connection
-                ProgressDialog waitDialog = ProgressDialog.show(this,
+                dial = ProgressDialog.show(Utils.getCurrentActivity(),
                         getString(R.string.DialogConnexionTitle),
                         getString(R.string.DialogConnexionMsg));
             }
         });
 
-        Utils.setRobBluetoothName(roboboBluetoothName);
+        roboboHelper = new RoboboServiceHelper(this,new RobHelperListener());
+
+        Bundle options = new Bundle();
+        options.putString(BluetoothRobInterfaceModule.ROBOBO_BT_NAME_OPTION,roboboBluetoothName);
+        roboboHelper.bindRoboboService(options);
+
+
+
     }
 
-   public void showErrorDialog(final String msg) {
+    public void showErrorDialog(final String msg) {
 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                AlertDialog.Builder builder = new AlertDialog.Builder(BaseActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(Utils.getCurrentActivity());
 
                 builder.setTitle(R.string.ErrorDialogTitle).
                         setMessage(msg);
@@ -165,5 +221,10 @@ public class BaseActivity extends AppCompatActivity
                 dialog.show();
             }
         });
+    }
+
+    public void dismissProgessDial()
+    {
+        dial.dismiss();
     }
 }
