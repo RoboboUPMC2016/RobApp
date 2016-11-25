@@ -15,13 +15,17 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mytechia.robobo.framework.exception.ModuleNotFoundException;
+import com.mytechia.robobo.rob.movement.IRobMovementModule;
 import com.robapp.R;
 import com.mytechia.robobo.framework.RoboboManager;
 import com.mytechia.robobo.framework.service.RoboboServiceHelper;
 import com.mytechia.robobo.rob.BluetoothRobInterfaceModule;
 import com.robapp.app.adapter.BehaviorAdapter;
+import com.robapp.app.dialog.BehaviorSelectionDialog;
 import com.robapp.app.dialog.Launcher;
 import com.robapp.app.dialog.RobDeviceSelectionDialog;
+import com.robapp.app.task.AsyncTask;
 import com.robapp.behaviors.interfaces.BehaviorItemI;
 import com.robapp.app.listener.FABListener;
 import com.robapp.utils.Utils;
@@ -30,12 +34,18 @@ import java.util.ArrayList;
 
 public class BehaviorActivity extends BaseActivity {
 
-    private static int colorRed = Color.argb(0,100,0,0);
-    private static int colorGreen = Color.argb(0,0,100,0);
-
     Button startButton;
     TextView behaviorName;
-    boolean behaviorStarted;
+    private boolean behaviorStarted;
+    private Thread thread;
+
+    public boolean isBehaviorStarted() {
+        return behaviorStarted;
+    }
+
+    public void setBehaviorStarted(boolean behaviorStarted) {
+        this.behaviorStarted = behaviorStarted;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +56,9 @@ public class BehaviorActivity extends BaseActivity {
         setContentView(R.layout.activity_behavior);
         setupDrawer();
 
+        if(!behaviorStarted)
+            thread = null;
         startButton = (Button) findViewById(R.id.startButton);
-        startButton.setTextColor(Color.GREEN);
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,20 +69,32 @@ public class BehaviorActivity extends BaseActivity {
                     return;
                 }
 
+                if(selectedBehavior != null)
+                {
+                }
 
-                behaviorStarted = !behaviorStarted;
-                if(behaviorStarted && selectedBehavior != null)
+                if(!behaviorStarted)
                 {
                     behaviorStarted = true;
                     Launcher launcher = new Launcher(BehaviorActivity.this,5,selectedBehavior);
                     launcher.show();
-                    startButton.setTextColor(Color.RED);
+                    thread = launcher.getThread();
                     startButton.setText("Stopper");
+
                 }
                 else
                 {
                     behaviorStarted = false;
-                    startButton.setTextColor(Color.GREEN);
+                    if(thread != null) {
+                        thread.interrupt();
+                        try {
+                            IRobMovementModule module = Utils.getRoboboManager().getModuleInstance(IRobMovementModule.class);
+                            module.stop();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        thread = null;
+                    }
                     startButton.setText("Demarrer");
                 }
 

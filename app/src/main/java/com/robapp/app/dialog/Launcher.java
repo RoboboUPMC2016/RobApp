@@ -5,10 +5,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.view.View;
+import android.widget.Button;
 
 import com.robapp.app.activity.BehaviorActivity;
 import com.robapp.behaviors.interfaces.BehaviorItemI;
-
+import com.robapp.app.task.AsyncTask;
 /**
  * Created by Arthur on 19/10/2016.
  */
@@ -35,10 +36,14 @@ public class Launcher extends ProgressDialog {
             public void onClick(DialogInterface dialog, int whichButton) {
                 if(!started)
                     launchBehavior();
-                else
-                    t.interrupt();
             }
         });
+        t = new Thread(behavior);
+    }
+
+    public Thread getThread()
+    {
+        return t;
     }
 
     @Override
@@ -71,23 +76,15 @@ public class Launcher extends ProgressDialog {
 
     public void launchBehavior() {
 
-        this.setMessage("Lancement du comportement : "+behavior.getName());
-        this.getButton(BUTTON_POSITIVE).setText("Arreter");
-        this.update();
 
         try {
 
             handler.removeCallbacks(run);
             started =true;
 
-            t = new Thread(behavior);
-
-
             System.out.println("Lancement CPT");
-            handler.post(t);
 
-            System.out.println("Comptement fini");
-            Thread.sleep(5);
+            t.start();
             this.dismiss();
 
         } catch (Exception e) {

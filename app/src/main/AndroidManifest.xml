@@ -38,6 +38,13 @@
                 android:value=".app.activity.BehaviorActivity" />
 
         </activity>
+        <activity android:name=".app.activity.QRCodeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".app.activity.BehaviorActivity" />
+
+        </activity>
     </application>
 
 </manifest>

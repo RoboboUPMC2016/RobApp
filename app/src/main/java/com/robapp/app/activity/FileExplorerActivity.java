@@ -21,9 +21,7 @@ import java.io.File;
 
 public class FileExplorerActivity extends BaseActivity {
 
-    private ViewFlipper viewFlipper;
 
-    private File file;
     private FileExplorerAdapter adapter;
     private File root;
     private Intent intent;
@@ -42,7 +40,7 @@ public class FileExplorerActivity extends BaseActivity {
         ListView list = (ListView) findViewById(R.id.listView7);
         list.setAdapter(adapter);
 
-        Intent intent = new Intent(this,BehaviorActivity.class);
+        intent = new Intent(this,BehaviorActivity.class);
     }
 
 

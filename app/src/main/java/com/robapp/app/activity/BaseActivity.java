@@ -21,8 +21,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.mytechia.robobo.framework.RoboboManager;
 import com.mytechia.robobo.framework.service.RoboboServiceHelper;
 import com.mytechia.robobo.rob.BluetoothRobInterfaceModule;
+import com.mytechia.robobo.rob.IRobInterfaceModule;
+import com.mytechia.robobo.rob.movement.IRobMovementModule;
 import com.robapp.R;
 import com.robapp.app.adapter.BehaviorAdapter;
 import com.robapp.app.dialog.BehaviorSelectionDialog;
@@ -126,9 +129,9 @@ public class BaseActivity extends AppCompatActivity
         } else if (id == R.id.nav_manage) {
             Intent intent = new Intent(Utils.getCurrentActivity(),FileExplorerActivity.class);
             Utils.getCurrentActivity().startActivity(intent);
-
         } else if (id == R.id.nav_share) {
-
+            Intent intent = new Intent(Utils.getCurrentActivity(),QRCodeActivity.class);
+            Utils.getCurrentActivity().startActivity(intent);
         } else if (id == R.id.nav_behavior) {
            final BehaviorSelectionDialog dialog = new BehaviorSelectionDialog();
             dialog.setListener(new BehaviorSelectionDialog.Listener() {
@@ -143,6 +146,22 @@ public class BaseActivity extends AppCompatActivity
                 {}
             });
             dialog.show(getFragmentManager(),"Selection Comportement");
+        }
+        else if(id == R.id.nav_reset)
+        {
+            try{
+                RoboboManager manager = Utils.getRoboboManager();
+                IRobMovementModule module = manager.getModuleInstance(IRobMovementModule.class);
+                IRobInterfaceModule rob  =   manager.getModuleInstance(IRobInterfaceModule.class);
+                rob.getRobInterface().setOperationMode((byte)1);
+
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+
+
         }
 
 

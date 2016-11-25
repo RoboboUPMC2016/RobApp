@@ -17,7 +17,8 @@ public class SquareTripBehavior implements Behavior {
 				actions.turnRight();
 			}
 
-			if(i++ >= ROUND_TRIP_NUMBER)
+			i+=1;
+			if(i >= ROUND_TRIP_NUMBER)
 				break;
 
 		}

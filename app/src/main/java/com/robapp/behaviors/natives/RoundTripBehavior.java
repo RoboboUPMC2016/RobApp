@@ -21,8 +21,9 @@ public class RoundTripBehavior implements Behavior {
 			
 			// and comes back to its starting point !
 			actions.moveForward(3);
-			
-			if(i++ >= ROUND_TRIP_NUMBER)
+
+			i+=1;
+			if(i >= ROUND_TRIP_NUMBER)
 				break;
 			
 			// Let's start again !
