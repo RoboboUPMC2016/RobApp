@@ -1,171 +1,267 @@
 package com.robapp.behaviors.actions;
 
 import com.mytechia.commons.framework.exception.InternalErrorException;
-import com.mytechia.robobo.framework.RoboboManager;
 import com.mytechia.robobo.framework.exception.ModuleNotFoundException;
-import com.mytechia.robobo.rob.BatteryStatus;
-import com.mytechia.robobo.rob.FallStatus;
-import com.mytechia.robobo.rob.GapStatus;
-import com.mytechia.robobo.rob.IRSensorStatus;
 import com.mytechia.robobo.rob.IRob;
 import com.mytechia.robobo.rob.IRobInterfaceModule;
-import com.mytechia.robobo.rob.IRobStatusListener;
-import com.mytechia.robobo.rob.MotorStatus;
-import com.mytechia.robobo.rob.WallConnectionStatus;
 import com.mytechia.robobo.rob.movement.IRobMovementModule;
 import com.robapp.behaviors.exceptions.StopBehaviorException;
+import com.robapp.behaviors.interfaces.CmdHandlerI;
+import com.robapp.behaviors.interfaces.EventHandlerI;
 import com.robapp.utils.Utils;
 
-import java.util.Collection;
+import java.util.ArrayList;
 
 import robdev.Actions;
+import robdev.Events;
 
 
-public class Acts implements Actions  {
+public class Acts implements Actions,EventHandlerI,CmdHandlerI {
 
-    IRobMovementModule modMove;
-
+    final private  static  Short velocity = new Short("70") ;
+    IRobMovementModule moveModule;
     IRobInterfaceModule robModule;
-
-    RoboboManager roboboManager;
-
     IRob rob;
+    boolean waiting;
 
-    int movementEnd;
-    int movementEnd1;
+    ArrayList<Events> eventsAwaited;
 
 
     public Acts (IRobMovementModule mMove) throws ModuleNotFoundException {
-        modMove = mMove;
-        movementEnd = 0;
-        movementEnd1 = 0;
+        moveModule = mMove;
 
-        roboboManager = Utils.getRoboboManager();
-        //low-level platform control module
-        this.robModule = this.roboboManager.getModuleInstance(IRobInterfaceModule.class);
-        //get the instance of the ROB interface
+        this.robModule = Utils.getRoboboManager().getModuleInstance(IRobInterfaceModule.class);
         this.rob = this.robModule.getRobInterface();
+        this.eventsAwaited = new ArrayList<Events>();
+        this.waiting = false;
+
         try {
             this.rob.setRobStatusPeriod(100);
         } catch (InternalErrorException e) {
             e.printStackTrace();
         }
-
-
-        rob.addRobStatusListener(new IRobStatusListener() {
-            @Override
-            public void statusMotorsMT(MotorStatus motorStatus, MotorStatus motorStatus1) {
-                if (motorStatus.getAngularVelocity() == 0 && motorStatus1.getAngularVelocity() == 0
-                        && (movementEnd1 != 0 || movementEnd != 0)) {
-                    synchronized (Utils.getRoboboManager()) {
-                        Utils.getRoboboManager().notify();
-                    }
-                }
-                movementEnd = motorStatus.getAngularVelocity();
-                movementEnd1 = motorStatus1.getAngularVelocity();
-            }
-
-            @Override
-            public void statusMotorPan(MotorStatus motorStatus) {
-
-            }
-
-            @Override
-            public void statusMotorTilt(MotorStatus motorStatus) {
-
-            }
-
-            @Override
-            public void statusGaps(Collection<GapStatus> collection) {
-
-            }
-
-            @Override
-            public void statusFalls(Collection<FallStatus> collection) {
-
-            }
-
-            @Override
-            public void statusIRSensorStatus(Collection<IRSensorStatus> collection) {
-
-            }
-
-            @Override
-            public void statusBattery(BatteryStatus batteryStatus) {
-
-            }
-
-            @Override
-            public void statusWallConnectionStatus(WallConnectionStatus wallConnectionStatus) {
-
-            }
-
-            @Override
-            public void robCommunicationError(InternalErrorException e) {
-
-            }
-        });
     }
 
     @Override
-    public void pause() {
-        try {
-            modMove.stop();
+    public void wait(int i) {
+
+        synchronized (this)
+        {
+            try {
+                Thread.sleep(i*1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                throw new StopBehaviorException("Stop wait("+i+")");
+            }
+        }
+
+    }
+
+    @Override
+    public void wait(Events events) {
+
+        synchronized (this) {
+            switch(events) {
+                case SHOCK_DETECTED:
+                    waitEvent(events);
+                    break;
+                case IRFRONT:
+                    waitEvent(events);
+                    break;
+                case IRBACK:
+                    waitEvent(events);
+                    break;
+                default:
+                    System.out.println("Error : Event not handled");
+            }
+        }
+    }
+
+    @Override
+    public void moveForward(int i) {
+       try
+        {
+            moveModule.moveForwardsTime(velocity,i*1000);
+            waitEndCmd();
         } catch (InternalErrorException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void moveForward(int i) {
+    public void moveForward(Events events) {
+
         try {
-            modMove.moveForwardsTime(new Short("70"),i*1000);
-            synchronized (Utils.getRoboboManager()) {
-                Utils.getRoboboManager().wait();
+            addWaitedEvent(events);
+            while(isWaitingEvent(events))
+            {
+                waiting = true;
+                moveModule.moveForwardsTime(velocity,Integer.MAX_VALUE);
+                waitEndCmd();
+                waiting = false;
             }
-        }
-        catch(Exception e){
+            moveModule.stop();
+
+        } catch (InternalErrorException e) {
             e.printStackTrace();
-            throw new StopBehaviorException("Stop Behavior");
         }
     }
 
     @Override
     public void moveBackward(int i) {
         try {
-            modMove.moveBackwardsTime(new Short("70"),i*1000);
-            synchronized (Utils.getRoboboManager()) {
-                Utils.getRoboboManager().wait();
-            }
-        } catch(Exception e){
+            waiting = true;
+            moveModule.moveBackwardsTime(velocity, i * 1000);
+            waitEndCmd();
+            waiting = false;
+        } catch (InternalErrorException e) {
             e.printStackTrace();
-            throw new StopBehaviorException("Stop Behavior");
         }
 
     }
 
     @Override
+    public void moveBackward(Events events) {
+
+        try{
+            addWaitedEvent(events);
+            while(isWaitingEvent(events))
+            {
+                waiting =true;
+                moveModule.moveBackwardsTime(velocity,Integer.MAX_VALUE);
+                waitEndCmd();
+                waiting =false;
+            }
+            moveModule.stop();
+        }
+        catch(InternalErrorException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void turnRight() {
         try {
-            modMove.turnRightAngle(new Short("40"), (int)(90*4.89));
-            synchronized (Utils.getRoboboManager()) {
-                Utils.getRoboboManager().wait();
-            }
-        } catch(Exception e){
-            throw new StopBehaviorException("Stop Behavior");
+
+                waiting = true;
+                moveModule.turnRightAngle(new Short("40"), (int) (90 * 4.89));
+                waitEndCmd();
+                waiting = false;
+
+        } catch (InternalErrorException e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     public void turnLeft() {
         try {
-            modMove.turnLeftAngle(new Short("40"), (int)(90*4.89));
-            synchronized (Utils.getRoboboManager()) {
-                Utils.getRoboboManager().wait();
-            }
-        }  catch(Exception e){
+
+                waiting = true;
+                moveModule.turnLeftAngle(velocity, (int) (90 * 4.89));
+                waitEndCmd();
+                waiting = false;
+
+        }catch (InternalErrorException e) {
             e.printStackTrace();
-            throw new StopBehaviorException("Stop Behavior");
         }
+    }
+
+    @Override
+    public void stop() {
+        try {
+            synchronized (this) {
+                moveModule.stop();
+            }
+        } catch (InternalErrorException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void handleEvent(Events e) {
+        synchronized (this) {
+            switch (e) {
+                case SHOCK_DETECTED:
+                    System.out.println("Shock");
+                    removeWaitEvent(e);
+                    this.notify();
+                    break;
+                case IRFRONT:
+                    System.out.println("IRFRont");
+                    removeWaitEvent(e);
+                    this.notify();
+                    break;
+                case IRBACK:
+                    System.out.println("IRBack");
+                    removeWaitEvent(e);
+                    this.notify();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private void addWaitedEvent(Events e) {
+        eventsAwaited.add(e);
+    }
+
+    private void removeWaitEvent(Events e) {
+        eventsAwaited.remove(e);
+    }
+
+    @Override
+    public boolean isWaitingEvent(Events e) {
+        return eventsAwaited.contains(e);
+    }
+
+    @Override
+    public void waitEvent(Events ev) {
+        synchronized (this) {
+            try{
+                addWaitedEvent(ev);
+                while(isWaitingEvent(ev))
+                    this.wait();
+                removeWaitEvent(ev);
+            }catch(InterruptedException e)
+            {
+                removeWaitEvent(ev);
+                e.printStackTrace();
+                throw new StopBehaviorException("Interrupt wait event");
+            }
+        }
+    }
+
+    @Override
+    public void waitEndCmd() {
+
+        synchronized (this)
+        {
+            try{
+                this.waiting = true;
+                this.wait();
+                this.waiting = false;
+            }
+            catch(InterruptedException e){
+                this.waiting = false;
+                if(Thread.currentThread().isInterrupted())
+                    throw new StopBehaviorException("wait instruction");
+            }
+        }
+    }
+
+    @Override
+    public void handleEndCmd() {
+        synchronized (this)
+        {
+            this.notify();
+        }
+    }
+
+    @Override
+    public boolean IsWaiting() {
+        return waiting;
     }
 }

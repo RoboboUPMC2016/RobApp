@@ -118,6 +118,8 @@ public class BaseActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        if(Utils.isBehaviorStarted())
+            return false;
 
         if (id == R.id.nav_camera) {
             // Handle the camera action

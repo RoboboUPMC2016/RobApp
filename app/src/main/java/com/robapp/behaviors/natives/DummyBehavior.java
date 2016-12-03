@@ -25,8 +25,4 @@ public class DummyBehavior implements Behavior {
             }
     }
 
-    @Override
-    public void run() {
-
-    }
 }

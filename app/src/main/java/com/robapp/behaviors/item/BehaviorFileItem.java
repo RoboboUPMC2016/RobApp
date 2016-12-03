@@ -79,10 +79,13 @@ public class BehaviorFileItem implements BehaviorItemI
 
     @Override
     public void run() {
+
+        boolean event = false;
+        boolean status = false;
+        Acts act = null;
         try{
             Class<?> myClass =  BehaviorClassLoader.getClassFromDexFile(Utils.getCurrentActivity().getApplicationContext(),file.getAbsolutePath(),getName());
             Object obj =  myClass.newInstance();
-            System.out.println("Class "+myClass.getName()+"loaded : "+obj.toString());
 
             if(obj instanceof Behavior)
             {
@@ -91,20 +94,28 @@ public class BehaviorFileItem implements BehaviorItemI
                 IRobInterfaceModule rob =  Utils.getRoboboManager().getModuleInstance(IRobInterfaceModule.class);
                 rob.getRobInterface().setOperationMode((byte)1);
 
-                Actions act = new Acts(module);
+                act = new Acts(module);
+                Utils.getEventListener().subscribe(act);
+                event = true;
+                Utils.getStatusListener().subscribe(act);
+                status = true;
                 behavior.run(act);
             }
         }
         catch(Exception e){
             e.printStackTrace();
         }
-
-        if(Utils.getCurrentActivity() instanceof BehaviorActivity)
-        {
-            Button startButton = (Button) Utils.getCurrentActivity().findViewById(R.id.startButton);
-            startButton.setText("Demmarer");
-            ((BehaviorActivity) Utils.getCurrentActivity()).setBehaviorStarted(false);
+        finally{
+            Utils.setBehaviorStarted(false);
+            if(event)
+                Utils.getEventListener().unsubscribe(act);
+            if(status)
+                Utils.getStatusListener().unsubscribe(act);
         }
+
+
+
+
 
     }
 

@@ -24,8 +24,4 @@ public class SquareTripBehavior implements Behavior {
 		}
 	}
 
-	@Override
-	public void run() {
-
-	}
 }

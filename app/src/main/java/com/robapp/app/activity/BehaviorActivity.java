@@ -36,27 +36,18 @@ public class BehaviorActivity extends BaseActivity {
 
     Button startButton;
     TextView behaviorName;
-    private boolean behaviorStarted;
     private Thread thread;
 
-    public boolean isBehaviorStarted() {
-        return behaviorStarted;
-    }
-
-    public void setBehaviorStarted(boolean behaviorStarted) {
-        this.behaviorStarted = behaviorStarted;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        behaviorStarted = false;
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_behavior);
         setupDrawer();
 
-        if(!behaviorStarted)
+        if(!Utils.isBehaviorStarted())
             thread = null;
         startButton = (Button) findViewById(R.id.startButton);
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -73,18 +64,17 @@ public class BehaviorActivity extends BaseActivity {
                 {
                 }
 
-                if(!behaviorStarted)
+                if(!Utils.isBehaviorStarted())
                 {
-                    behaviorStarted = true;
+                    Utils.setBehaviorStarted(true);
                     Launcher launcher = new Launcher(BehaviorActivity.this,5,selectedBehavior);
                     launcher.show();
                     thread = launcher.getThread();
-                    startButton.setText("Stopper");
 
                 }
                 else
                 {
-                    behaviorStarted = false;
+                    Utils.setBehaviorStarted(true);
                     if(thread != null) {
                         thread.interrupt();
                         try {
@@ -95,7 +85,7 @@ public class BehaviorActivity extends BaseActivity {
                         }
                         thread = null;
                     }
-                    startButton.setText("Demarrer");
+
                 }
 
 

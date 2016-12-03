@@ -1,10 +1,9 @@
 package com.robapp.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.net.Uri;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -15,28 +14,29 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.mytechia.robobo.framework.RoboboManager;
 import com.robapp.R;
 import com.robapp.app.activity.BaseActivity;
+import com.robapp.app.activity.BehaviorActivity;
+import com.robapp.behaviors.interfaces.EventListenerI;
 import com.robapp.behaviors.item.BehaviorFileItem;
+import com.robapp.behaviors.listener.CmdListener;
+import com.robapp.behaviors.listener.ShockListener;
 import com.robapp.behaviors.natives.DummyBehavior;
 import com.robapp.behaviors.item.NativeBehaviorItem;
+import com.robapp.behaviors.natives.InfiniteRoundBehavior;
 import com.robapp.behaviors.natives.RoundTripBehavior;
+import com.robapp.behaviors.natives.MyBehavior;
 import com.robapp.behaviors.natives.SquareTripBehavior;
 import com.robapp.behaviors.interfaces.BehaviorItemI;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-
-import ch.qos.logback.core.net.SyslogOutputStream;
 
 /**
  * Created by Arthur on 16/10/2016.
@@ -49,9 +49,13 @@ public class Utils {
     private static ArrayList<BehaviorItemI> behaviors;
     private static File privateDir;
     private static final String xmlFileName = "robapp_behaviors_.xml";
-    public static String defaultUrl ="http://robhub.esy.es/";
+    public  static String defaultUrl ="http://robhub.esy.es/";
     private static final int QRCodeSize = 400;
+    private static ShockListener listener =  null;
+    private static boolean behaviorStarted = false;
 
+    private static EventListenerI eventListener;
+    private static CmdListener statusListener;
 
     public static void init(Context context)
     {
@@ -63,6 +67,9 @@ public class Utils {
         behaviors.add(new NativeBehaviorItem("Dummy Behavior Native",new DummyBehavior()));
         behaviors.add(new NativeBehaviorItem("Round Trip",new RoundTripBehavior()));
         behaviors.add(new NativeBehaviorItem("Square Trip",new SquareTripBehavior()));
+        behaviors.add(new NativeBehaviorItem("Shock Behavior",new MyBehavior()));
+        behaviors.add(new NativeBehaviorItem("Infinite Shock Behavior",new InfiniteRoundBehavior()));
+
 
         privateDir = context.getDir("behavior_downloaded",Context.MODE_PRIVATE);
 
@@ -222,4 +229,49 @@ public class Utils {
         }
     }
 
+    public static void setShockListener(ShockListener listener)
+    {
+        Utils.listener = listener;
+    }
+
+    public static ShockListener getShockListener()
+    {
+        return Utils.listener;
+    }
+
+    public static boolean isBehaviorStarted() {
+        return behaviorStarted;
+    }
+
+    public static void setBehaviorStarted(boolean behaviorStarted) {
+        Utils.behaviorStarted = behaviorStarted;
+        if(current instanceof BehaviorActivity)
+        {
+          /*  if(behaviorStarted)
+            {
+                ((Button)current.findViewById(R.id.startButton)).setText("Stopper");
+            }
+            else
+            {
+                ((Button)current.findViewById(R.id.startButton)).setText("Demarrer");
+            }*/
+        }
+
+    }
+
+    public static CmdListener getStatusListener() {
+        return statusListener;
+    }
+
+    public static void setStatusListener(CmdListener statusListener) {
+        Utils.statusListener = statusListener;
+    }
+
+    public static EventListenerI getEventListener() {
+        return eventListener;
+    }
+
+    public static void setEventListener(EventListenerI eventListener) {
+        Utils.eventListener = eventListener;
+    }
 }

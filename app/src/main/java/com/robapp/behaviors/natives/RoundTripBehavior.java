@@ -30,9 +30,4 @@ public class RoundTripBehavior implements Behavior {
 				
 		}
 	}
-
-	@Override
-	public void run() {
-
-	}
 }
