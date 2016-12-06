@@ -5,9 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -15,11 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import android.widget.Toast;
+
 
 import com.mytechia.robobo.framework.RoboboManager;
 import com.mytechia.robobo.framework.service.RoboboServiceHelper;
@@ -27,7 +21,6 @@ import com.mytechia.robobo.rob.BluetoothRobInterfaceModule;
 import com.mytechia.robobo.rob.IRobInterfaceModule;
 import com.mytechia.robobo.rob.movement.IRobMovementModule;
 import com.robapp.R;
-import com.robapp.app.adapter.BehaviorAdapter;
 import com.robapp.app.dialog.BehaviorSelectionDialog;
 import com.robapp.app.dialog.RobDeviceSelectionDialog;
 import com.robapp.behaviors.interfaces.BehaviorItemI;
@@ -48,7 +41,6 @@ public class BaseActivity extends AppCompatActivity
 
     protected RoboboServiceHelper roboboHelper;
     private ProgressDialog dial;
-    private BehaviorAdapter adapter;
 
     protected static BehaviorItemI selectedBehavior;
 
@@ -122,7 +114,7 @@ public class BaseActivity extends AppCompatActivity
             return false;
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+
         } else if (id == R.id.nav_bluetooth) {
             robStarted = false;
             showRoboboDeviceSelectionDialog();

@@ -7,6 +7,7 @@ import com.mytechia.robobo.framework.RoboboManager;
 import com.mytechia.robobo.framework.RoboboManagerListener;
 import com.mytechia.robobo.framework.RoboboManagerState;
 import com.mytechia.robobo.framework.exception.ModuleNotFoundException;
+import com.mytechia.robobo.framework.hri.emotion.IEmotionModule;
 import com.mytechia.robobo.framework.misc.shock.IShockDetectionListener;
 import com.mytechia.robobo.framework.misc.shock.IShockDetectionModule;
 import com.mytechia.robobo.framework.misc.shock.ShockCategory;
@@ -22,6 +23,7 @@ import com.mytechia.robobo.rob.MotorStatus;
 import com.mytechia.robobo.rob.WallConnectionStatus;
 import com.mytechia.robobo.rob.movement.IRobMovementModule;
 import com.robapp.app.activity.BaseActivity;
+import com.robapp.app.activity.BehaviorActivity;
 import com.robapp.utils.Utils;
 
 import java.util.Collection;
@@ -125,6 +127,9 @@ public class RobHelperListener implements RoboboServiceHelper.Listener
 
                 }
             });
+
+            if(Utils.getCurrentActivity() instanceof BehaviorActivity)
+                roboboManager.getModuleInstance(IEmotionModule.class).subscribe((BehaviorActivity)Utils.getCurrentActivity());
 
         }
         catch(Exception e)

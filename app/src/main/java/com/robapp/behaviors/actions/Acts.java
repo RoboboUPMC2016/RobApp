@@ -2,6 +2,12 @@ package com.robapp.behaviors.actions;
 
 import com.mytechia.commons.framework.exception.InternalErrorException;
 import com.mytechia.robobo.framework.exception.ModuleNotFoundException;
+import com.mytechia.robobo.framework.hri.emotion.Emotion;
+import com.mytechia.robobo.framework.hri.emotion.IEmotionListener;
+import com.mytechia.robobo.framework.hri.emotion.IEmotionModule;
+import com.mytechia.robobo.framework.hri.emotion.webgl.WebGLEmotionDisplayActivity;
+import com.mytechia.robobo.framework.hri.speech.production.ISpeechProductionModule;
+import com.mytechia.robobo.framework.hri.speech.production.android.AndroidSpeechProductionModule;
 import com.mytechia.robobo.rob.IRob;
 import com.mytechia.robobo.rob.IRobInterfaceModule;
 import com.mytechia.robobo.rob.movement.IRobMovementModule;
@@ -21,19 +27,22 @@ public class Acts implements Actions,EventHandlerI,CmdHandlerI {
     final private  static  Short velocity = new Short("70") ;
     IRobMovementModule moveModule;
     IRobInterfaceModule robModule;
+    IEmotionModule emotionModule;
+    ISpeechProductionModule speechModule;
     IRob rob;
     boolean waiting;
 
     ArrayList<Events> eventsAwaited;
 
-
     public Acts (IRobMovementModule mMove) throws ModuleNotFoundException {
         moveModule = mMove;
-
+        this.emotionModule = Utils.getRoboboManager().getModuleInstance(IEmotionModule.class);
         this.robModule = Utils.getRoboboManager().getModuleInstance(IRobInterfaceModule.class);
+        this.speechModule = Utils.getRoboboManager().getModuleInstance(ISpeechProductionModule.class);
         this.rob = this.robModule.getRobInterface();
         this.eventsAwaited = new ArrayList<Events>();
         this.waiting = false;
+
 
         try {
             this.rob.setRobStatusPeriod(100);
@@ -42,6 +51,9 @@ public class Acts implements Actions,EventHandlerI,CmdHandlerI {
         }
     }
 
+    private Emotion mappingEmotions(){
+        return Emotion.NORMAL;
+    }
     @Override
     public void wait(int i) {
 
@@ -179,6 +191,19 @@ public class Acts implements Actions,EventHandlerI,CmdHandlerI {
         }
     }
 
+    public void speak(String text){
+        speechModule.sayText(text,ISpeechProductionModule.PRIORITY_HIGH);
+    }
+
+    public void selectVoice(String name)
+    {
+        try {
+            speechModule.selectVoice(name);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void handleEvent(Events e) {
         synchronized (this) {
@@ -263,5 +288,10 @@ public class Acts implements Actions,EventHandlerI,CmdHandlerI {
     @Override
     public boolean IsWaiting() {
         return waiting;
+    }
+
+    public void setEmotion(Emotion e)
+    {
+        this.emotionModule.setCurrentEmotion(e);
     }
 }
