@@ -36,8 +36,6 @@ public class NativeBehaviorItem implements BehaviorItemI {
     @Override
     public void run() {
 
-
-        boolean event = false;
         boolean status = false;
         Acts act = null;
 
@@ -47,28 +45,16 @@ public class NativeBehaviorItem implements BehaviorItemI {
             IRobInterfaceModule rob =  Utils.getRoboboManager().getModuleInstance(IRobInterfaceModule.class);
             rob.getRobInterface().setOperationMode((byte)1);
             act = new Acts(module);
-
-            Utils.getEventListener().subscribe(act);
-            event = true;
-            Utils.getStatusListener().subscribe(act);
-            status = true;
             behavior.run(act);
         }
         catch(Exception e)
         {
             e.printStackTrace();
         }
-        finally{
+        finally {
             Utils.setBehaviorStarted(false);
-            if(event)
-                Utils.getEventListener().unsubscribe(act);
-            if(status)
-                Utils.getStatusListener().unsubscribe(act);
+            Utils.updateBehaviorActivity();
         }
-
-        Utils.setBehaviorStarted(false);
-
-
     }
 
     @Override

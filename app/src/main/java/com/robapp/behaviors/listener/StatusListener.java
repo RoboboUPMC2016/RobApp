@@ -9,70 +9,44 @@ import com.mytechia.robobo.rob.IRobStatusListener;
 import com.mytechia.robobo.rob.MotorStatus;
 import com.mytechia.robobo.rob.WallConnectionStatus;
 import com.robapp.behaviors.actions.Acts;
+import com.robapp.behaviors.executions.ContextManager;
 import com.robapp.behaviors.interfaces.CmdHandlerI;
 import com.robapp.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+import robdev.Event;
+
 
 /**
  * Created by Arthur on 03/12/2016.
  */
 
-public class CmdListener implements IRobStatusListener {
+public class StatusListener implements IRobStatusListener {
 
     int movementEnd;
     int movementEnd1;
+    private static int IRTHRESHOLD = 100;
 
-    private ArrayList<CmdHandlerI> handlers;
-
-    public CmdListener()
+    public StatusListener()
     {
-        handlers = new ArrayList<CmdHandlerI>();
         movementEnd =0;
         movementEnd =0;
     }
 
     public void waitListener()
     {
-        handlers = new ArrayList<CmdHandlerI>();
         movementEnd = 0;
         movementEnd1 = 0;
-    }
-
-    public void subscribe(CmdHandlerI handler)
-    {
-        synchronized (handlers){
-            handlers.add(handler);
-        }
-
-    }
-
-    public void unsubscribe(CmdHandlerI handler)
-    {
-        synchronized (handlers){
-            handlers.remove(handler);
-        }
-
     }
 
     @Override
     public void statusMotorsMT(MotorStatus motorStatus, MotorStatus motorStatus1) {
 
-        CmdHandlerI handler = null;
-        synchronized (handlers){
-            if(handlers.size() > 0)
-                handler = handlers.get(handlers.size()-1);
-        }
-
-        if(handler == null)
-            return;
-
         if (motorStatus.getAngularVelocity() == 0 && motorStatus1.getAngularVelocity() == 0
                 && (movementEnd1 != 0 || movementEnd != 0)) {
-            if(handler.IsWaiting())
-                handler.handleEndCmd();
+            ContextManager.notifyEndCommand();
         }
 
         movementEnd = motorStatus.getAngularVelocity();
@@ -101,6 +75,28 @@ public class CmdListener implements IRobStatusListener {
 
     @Override
     public void statusIRSensorStatus(Collection<IRSensorStatus> collection) {
+
+                for(IRSensorStatus IR : collection)
+                {
+                    switch(IR.getId())
+                    {
+                        case IRSensorStatus1:
+                        case IRSensorStatus2:
+                        case IRSensorStatus3:
+                        case IRSensorStatus4:
+                        case IRSensorStatus5:
+                                if(IR.getDistance() > IRTHRESHOLD)
+                                    ContextManager.dispatcheEvent(Event.IRFRONT);
+                            break;
+                        case IRSensorStatus6:
+                        case IRSensorStatus7:
+                        case IRSensorStatus8:
+                        case IRSensorStatus9:
+                            if(IR.getDistance() > IRTHRESHOLD)
+                                ContextManager.dispatcheEvent(Event.IRFRONT);
+                            break;
+                    }
+                }
     }
 
     @Override
@@ -117,4 +113,5 @@ public class CmdListener implements IRobStatusListener {
     public void robCommunicationError(InternalErrorException e) {
 
     }
+
 }

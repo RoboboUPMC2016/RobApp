@@ -11,9 +11,7 @@
                   var currentEmotion = "images/face-normal.png";
 
                   function changeImage(a) {
-                      document.getElementById("top").src=currentEmotion;
-                      document.getElementById("down").src=a;
-                      $('#top').fadeOut(300);
+                      document.getElementById("emotion").src=currentEmotion;
                       currentEmotion = a;
                   }
 
@@ -55,7 +53,7 @@
 
         </script>
             <div style="width:100%;height:100%;">
-            <img id="down" style="width:100%;height:100%;" src="images/face-normal.png">
+            <img id="emotion" style="width:100%;height:100%;" src="images/face-normal.png">
             </div>
 
 

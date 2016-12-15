@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -34,12 +35,13 @@ import java.util.Properties;
 
 import ch.qos.logback.core.net.SyslogOutputStream;
 
-public class BehaviorActivity extends BaseActivity implements IEmotionListener {
+public class BehaviorActivity extends BaseActivity implements IEmotionListener, DialogInterface.OnDismissListener {
 
     Button startButton;
     TextView behaviorName;
     private Thread thread;
     WebView myWebView;
+    Launcher launcher;
 
 
     @Override
@@ -49,9 +51,6 @@ public class BehaviorActivity extends BaseActivity implements IEmotionListener {
         setContentView(R.layout.activity_behavior);
         setupDrawer();
 
-
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         if(!Utils.isBehaviorStarted())
             thread = null;
@@ -66,33 +65,14 @@ public class BehaviorActivity extends BaseActivity implements IEmotionListener {
                     return;
                 }
 
-                if(selectedBehavior != null)
-                {
-                }
-
                 if(!Utils.isBehaviorStarted())
                 {
-                    Utils.setBehaviorStarted(true);
-                    Launcher launcher = new Launcher(BehaviorActivity.this,5,selectedBehavior);
+                    launcher = new Launcher(BehaviorActivity.this,5,selectedBehavior);
+                    launcher.setOnDismissListener(BehaviorActivity.this);
                     launcher.show();
-                    thread = launcher.getThread();
-
                 }
                 else
-                {
-                    Utils.setBehaviorStarted(true);
-                    if(thread != null) {
-                        thread.interrupt();
-                        try {
-                            IRobMovementModule module = Utils.getRoboboManager().getModuleInstance(IRobMovementModule.class);
-                            module.stop();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        thread = null;
-                    }
-
-                }
+                    stopBehavior();
 
 
             }
@@ -115,6 +95,7 @@ public class BehaviorActivity extends BaseActivity implements IEmotionListener {
         webSettings.setAllowUniversalAccessFromFileURLs(true);
         webSettings.setUseWideViewPort(true);
         webSettings.setLoadWithOverviewMode(true);
+
     }
 
 
@@ -148,4 +129,57 @@ public class BehaviorActivity extends BaseActivity implements IEmotionListener {
         super.onDestroy();
     }
 
+    public void updateStartButtonText(final boolean start)
+    {
+        if(!start)
+            startButton.post(new Runnable() {
+                @Override
+                public void run() {
+                    startButton.setText("Lancer");
+                }
+            });
+        else
+            startButton.post(new Runnable() {
+                @Override
+                public void run() {
+                    startButton.setText("Stopper");
+                }
+            });
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        if(launcher.launchConfirmed())
+        {
+            try{
+
+                thread = launcher.getThread();
+                if(thread != null)
+                {
+                    Utils.setBehaviorStarted(true);
+                    updateStartButtonText(true);
+                    Utils.getRoboboManager().getModuleInstance(IEmotionModule.class).subscribe(this);
+                    thread.start();
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    public void stopBehavior(){
+        if(thread != null) {
+            thread.interrupt();
+            try {
+                IRobMovementModule module = Utils.getRoboboManager().getModuleInstance(IRobMovementModule.class);
+                module.stop();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            thread = null;
+        }
+    }
 }

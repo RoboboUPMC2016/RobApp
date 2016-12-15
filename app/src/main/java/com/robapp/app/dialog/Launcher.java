@@ -34,16 +34,12 @@ public class Launcher extends ProgressDialog {
         this.setButton(BUTTON_POSITIVE,"Lancer",new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
-                if(!started)
-                    launchBehavior();
+                started = true;
+                dismiss();
+
             }
         });
         t = new Thread(behavior);
-    }
-
-    public Thread getThread()
-    {
-        return t;
     }
 
     @Override
@@ -57,9 +53,7 @@ public class Launcher extends ProgressDialog {
                 timed--;
                 update();
                 if(timed == 0)
-                {
-                    launchBehavior();
-                }
+                    dismiss();
                 else
                     handler.postDelayed(this,1000);
             }
@@ -74,22 +68,25 @@ public class Launcher extends ProgressDialog {
         this.setMessage("Lancement dans "+timed+" s");
     }
 
-    public void launchBehavior() {
-
-
-        try {
-
+    @Override
+    public void onStop()
+    {
+        synchronized (this)
+        {
             handler.removeCallbacks(run);
-            started =true;
-
-            System.out.println("Lancement CPT");
-
-            t.start();
-            this.dismiss();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            this.notify();
         }
     }
 
+    public boolean launchConfirmed()
+    {
+        return started;
+    }
+
+    public Thread getThread()
+    {
+        if(started)
+            return t;
+        return null;
+    }
 }

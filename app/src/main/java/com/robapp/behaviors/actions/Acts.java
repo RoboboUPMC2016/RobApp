@@ -2,37 +2,31 @@ package com.robapp.behaviors.actions;
 
 import com.mytechia.commons.framework.exception.InternalErrorException;
 import com.mytechia.robobo.framework.exception.ModuleNotFoundException;
-import com.mytechia.robobo.framework.hri.emotion.Emotion;
-import com.mytechia.robobo.framework.hri.emotion.IEmotionListener;
 import com.mytechia.robobo.framework.hri.emotion.IEmotionModule;
-import com.mytechia.robobo.framework.hri.emotion.webgl.WebGLEmotionDisplayActivity;
 import com.mytechia.robobo.framework.hri.speech.production.ISpeechProductionModule;
-import com.mytechia.robobo.framework.hri.speech.production.android.AndroidSpeechProductionModule;
 import com.mytechia.robobo.rob.IRob;
 import com.mytechia.robobo.rob.IRobInterfaceModule;
 import com.mytechia.robobo.rob.movement.IRobMovementModule;
+import com.robapp.behaviors.executions.ContextManager;
 import com.robapp.behaviors.exceptions.StopBehaviorException;
-import com.robapp.behaviors.interfaces.CmdHandlerI;
-import com.robapp.behaviors.interfaces.EventHandlerI;
+import com.robapp.behaviors.listener.WaitEventHandler;
+import com.robapp.behaviors.listener.WhenEventHandler;
 import com.robapp.utils.Utils;
 
-import java.util.ArrayList;
 
 import robdev.Actions;
-import robdev.Events;
+import robdev.Emotion;
+import robdev.Event;
 
 
-public class Acts implements Actions,EventHandlerI,CmdHandlerI {
+public class Acts implements Actions{
 
-    final private  static  Short velocity = new Short("70") ;
-    IRobMovementModule moveModule;
-    IRobInterfaceModule robModule;
-    IEmotionModule emotionModule;
-    ISpeechProductionModule speechModule;
-    IRob rob;
-    boolean waiting;
-
-    ArrayList<Events> eventsAwaited;
+    private final static Short VELOCITY = new Short("70") ;
+    private IRobMovementModule moveModule;
+    private IRobInterfaceModule robModule;
+    private IEmotionModule emotionModule;
+    private ISpeechProductionModule speechModule;
+    private IRob rob;
 
     public Acts (IRobMovementModule mMove) throws ModuleNotFoundException {
         moveModule = mMove;
@@ -40,9 +34,6 @@ public class Acts implements Actions,EventHandlerI,CmdHandlerI {
         this.robModule = Utils.getRoboboManager().getModuleInstance(IRobInterfaceModule.class);
         this.speechModule = Utils.getRoboboManager().getModuleInstance(ISpeechProductionModule.class);
         this.rob = this.robModule.getRobInterface();
-        this.eventsAwaited = new ArrayList<Events>();
-        this.waiting = false;
-
 
         try {
             this.rob.setRobStatusPeriod(100);
@@ -51,9 +42,33 @@ public class Acts implements Actions,EventHandlerI,CmdHandlerI {
         }
     }
 
-    private Emotion mappingEmotions(){
-        return Emotion.NORMAL;
+    private com.mytechia.robobo.framework.hri.emotion.Emotion mappingEmotions(Emotion emotion){
+        switch(emotion)
+        {
+            case Normal:
+                return com.mytechia.robobo.framework.hri.emotion.Emotion.NORMAL;
+            case Happy:
+                return com.mytechia.robobo.framework.hri.emotion.Emotion.HAPPY;
+            case Angry:
+                return com.mytechia.robobo.framework.hri.emotion.Emotion.ANGRY;
+            case Laughing:
+                return  com.mytechia.robobo.framework.hri.emotion.Emotion.LAUGHING;
+            case Smyling:
+                return com.mytechia.robobo.framework.hri.emotion.Emotion.SMYLING;
+            case Surprised:
+                return com.mytechia.robobo.framework.hri.emotion.Emotion.SURPRISED;
+            case Sad:
+                return com.mytechia.robobo.framework.hri.emotion.Emotion.SAD;
+            case In_Love:
+                return  com.mytechia.robobo.framework.hri.emotion.Emotion.IN_LOVE;
+            case Embarrased:
+                return com.mytechia.robobo.framework.hri.emotion.Emotion.EMBARRASED;
+            default:
+                return com.mytechia.robobo.framework.hri.emotion.Emotion.NORMAL;
+        }
+
     }
+
     @Override
     public void wait(int i) {
 
@@ -69,51 +84,46 @@ public class Acts implements Actions,EventHandlerI,CmdHandlerI {
 
     }
 
-    @Override
-    public void wait(Events events) {
+    public void wait(Event event) {
 
-        synchronized (this) {
-            switch(events) {
-                case SHOCK_DETECTED:
-                    waitEvent(events);
-                    break;
-                case IRFRONT:
-                    waitEvent(events);
-                    break;
-                case IRBACK:
-                    waitEvent(events);
-                    break;
-                default:
-                    System.out.println("Error : Event not handled");
+        ContextManager.addEventHandler(new WaitEventHandler(this,event));
+        synchronized (this)
+        {
+            try{
+                this.wait();
             }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+
         }
+
+
     }
 
     @Override
     public void moveForward(int i) {
        try
         {
-            moveModule.moveForwardsTime(velocity,i*1000);
-            waitEndCmd();
+            moveModule.moveForwardsTime(VELOCITY,i*1000);
+            waitCommandEnd();
         } catch (InternalErrorException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void moveForward(Events events) {
+    public void moveForward(Event event) {
 
         try {
-            addWaitedEvent(events);
-            while(isWaitingEvent(events))
+            WaitEventHandler handler = new WaitEventHandler(ContextManager.getCMDHandler(),event);
+            ContextManager.addEventHandler(handler);
+            while(!handler.isArrived())
             {
-                waiting = true;
-                moveModule.moveForwardsTime(velocity,Integer.MAX_VALUE);
-                waitEndCmd();
-                waiting = false;
+                moveModule.moveForwardsTime(VELOCITY,Integer.MAX_VALUE);
+                waitCommandEnd();
             }
             moveModule.stop();
-
         } catch (InternalErrorException e) {
             e.printStackTrace();
         }
@@ -122,10 +132,8 @@ public class Acts implements Actions,EventHandlerI,CmdHandlerI {
     @Override
     public void moveBackward(int i) {
         try {
-            waiting = true;
-            moveModule.moveBackwardsTime(velocity, i * 1000);
-            waitEndCmd();
-            waiting = false;
+            moveModule.moveBackwardsTime(VELOCITY, i * 1000);
+            waitCommandEnd();
         } catch (InternalErrorException e) {
             e.printStackTrace();
         }
@@ -133,16 +141,14 @@ public class Acts implements Actions,EventHandlerI,CmdHandlerI {
     }
 
     @Override
-    public void moveBackward(Events events) {
-
+    public void moveBackward(Event event) {
         try{
-            addWaitedEvent(events);
-            while(isWaitingEvent(events))
+            WaitEventHandler handler = new WaitEventHandler(ContextManager.getCMDHandler(),event);
+            ContextManager.addEventHandler(handler);
+            while(!handler.isArrived())
             {
-                waiting =true;
-                moveModule.moveBackwardsTime(velocity,Integer.MAX_VALUE);
-                waitEndCmd();
-                waiting =false;
+                moveModule.moveBackwardsTime(VELOCITY,Integer.MAX_VALUE);
+                waitCommandEnd();
             }
             moveModule.stop();
         }
@@ -155,12 +161,8 @@ public class Acts implements Actions,EventHandlerI,CmdHandlerI {
     @Override
     public void turnRight() {
         try {
-
-                waiting = true;
-                moveModule.turnRightAngle(new Short("40"), (int) (90 * 4.89));
-                waitEndCmd();
-                waiting = false;
-
+                moveModule.turnRightAngle(VELOCITY, (int) (90 * 4.89));
+                waitCommandEnd();
         } catch (InternalErrorException e) {
             e.printStackTrace();
         }
@@ -169,12 +171,8 @@ public class Acts implements Actions,EventHandlerI,CmdHandlerI {
     @Override
     public void turnLeft() {
         try {
-
-                waiting = true;
-                moveModule.turnLeftAngle(velocity, (int) (90 * 4.89));
-                waitEndCmd();
-                waiting = false;
-
+                moveModule.turnLeftAngle(VELOCITY, (int) (90 * 4.89));
+                waitCommandEnd();
         }catch (InternalErrorException e) {
             e.printStackTrace();
         }
@@ -183,16 +181,26 @@ public class Acts implements Actions,EventHandlerI,CmdHandlerI {
     @Override
     public void stop() {
         try {
-            synchronized (this) {
                 moveModule.stop();
-            }
         } catch (InternalErrorException e) {
             e.printStackTrace();
         }
     }
 
+    @Override
+    public void setEmotion(Emotion emotion) {
+
+        emotionModule.setCurrentEmotion(mappingEmotions(emotion));
+    }
+
+    @Override
     public void speak(String text){
         speechModule.sayText(text,ISpeechProductionModule.PRIORITY_HIGH);
+    }
+
+    @Override
+    public void when(Event event, Runnable runnable) {
+        ContextManager.addEventHandler(new WhenEventHandler(runnable,event));
     }
 
     public void selectVoice(String name)
@@ -204,94 +212,11 @@ public class Acts implements Actions,EventHandlerI,CmdHandlerI {
         }
     }
 
-    @Override
-    public void handleEvent(Events e) {
-        synchronized (this) {
-            switch (e) {
-                case SHOCK_DETECTED:
-                    System.out.println("Shock");
-                    removeWaitEvent(e);
-                    this.notify();
-                    break;
-                case IRFRONT:
-                    System.out.println("IRFRont");
-                    removeWaitEvent(e);
-                    this.notify();
-                    break;
-                case IRBACK:
-                    System.out.println("IRBack");
-                    removeWaitEvent(e);
-                    this.notify();
-                    break;
-                default:
-                    break;
-            }
-        }
+    public void waitCommandEnd() {
+
+        ContextManager.getCMDHandler().setWaiting(true);
+        ContextManager.getCMDHandler().waitEndCmd();
+        ContextManager.getCMDHandler().setWaiting(false);
     }
 
-    private void addWaitedEvent(Events e) {
-        eventsAwaited.add(e);
-    }
-
-    private void removeWaitEvent(Events e) {
-        eventsAwaited.remove(e);
-    }
-
-    @Override
-    public boolean isWaitingEvent(Events e) {
-        return eventsAwaited.contains(e);
-    }
-
-    @Override
-    public void waitEvent(Events ev) {
-        synchronized (this) {
-            try{
-                addWaitedEvent(ev);
-                while(isWaitingEvent(ev))
-                    this.wait();
-                removeWaitEvent(ev);
-            }catch(InterruptedException e)
-            {
-                removeWaitEvent(ev);
-                e.printStackTrace();
-                throw new StopBehaviorException("Interrupt wait event");
-            }
-        }
-    }
-
-    @Override
-    public void waitEndCmd() {
-
-        synchronized (this)
-        {
-            try{
-                this.waiting = true;
-                this.wait();
-                this.waiting = false;
-            }
-            catch(InterruptedException e){
-                this.waiting = false;
-                if(Thread.currentThread().isInterrupted())
-                    throw new StopBehaviorException("wait instruction");
-            }
-        }
-    }
-
-    @Override
-    public void handleEndCmd() {
-        synchronized (this)
-        {
-            this.notify();
-        }
-    }
-
-    @Override
-    public boolean IsWaiting() {
-        return waiting;
-    }
-
-    public void setEmotion(Emotion e)
-    {
-        this.emotionModule.setCurrentEmotion(e);
-    }
 }

@@ -3,7 +3,6 @@ package com.robapp.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -12,16 +11,14 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.mytechia.robobo.framework.RoboboManager;
-import com.robapp.R;
 import com.robapp.app.activity.BaseActivity;
 import com.robapp.app.activity.BehaviorActivity;
-import com.robapp.behaviors.interfaces.EventListenerI;
 import com.robapp.behaviors.item.BehaviorFileItem;
-import com.robapp.behaviors.listener.CmdListener;
-import com.robapp.behaviors.listener.ShockListener;
+import com.robapp.behaviors.listener.StatusListener;
 import com.robapp.behaviors.natives.DummyBehavior;
 import com.robapp.behaviors.item.NativeBehaviorItem;
 import com.robapp.behaviors.natives.InfiniteRoundBehavior;
+import com.robapp.behaviors.natives.ReactiveBehavior;
 import com.robapp.behaviors.natives.RoundTripBehavior;
 import com.robapp.behaviors.natives.MyBehavior;
 import com.robapp.behaviors.natives.SquareTripBehavior;
@@ -51,11 +48,9 @@ public class Utils {
     private static final String xmlFileName = "robapp_behaviors_.xml";
     public  static String defaultUrl ="http://robhub.esy.es/";
     private static final int QRCodeSize = 400;
-    private static ShockListener listener =  null;
     private static boolean behaviorStarted = false;
 
-    private static EventListenerI eventListener;
-    private static CmdListener statusListener;
+    private static StatusListener statusListener;
 
     public static void init(Context context)
     {
@@ -69,6 +64,7 @@ public class Utils {
         behaviors.add(new NativeBehaviorItem("Square Trip",new SquareTripBehavior()));
         behaviors.add(new NativeBehaviorItem("Shock Behavior",new MyBehavior()));
         behaviors.add(new NativeBehaviorItem("Infinite Shock Behavior",new InfiniteRoundBehavior()));
+        behaviors.add(new NativeBehaviorItem("Reactive Behavior",new ReactiveBehavior()));
 
 
         privateDir = context.getDir("behavior_downloaded",Context.MODE_PRIVATE);
@@ -229,49 +225,25 @@ public class Utils {
         }
     }
 
-    public static void setShockListener(ShockListener listener)
-    {
-        Utils.listener = listener;
-    }
-
-    public static ShockListener getShockListener()
-    {
-        return Utils.listener;
-    }
-
     public static boolean isBehaviorStarted() {
         return behaviorStarted;
     }
 
     public static void setBehaviorStarted(boolean behaviorStarted) {
         Utils.behaviorStarted = behaviorStarted;
-        if(current instanceof BehaviorActivity)
-        {
-          /*  if(behaviorStarted)
-            {
-                ((Button)current.findViewById(R.id.startButton)).setText("Stopper");
-            }
-            else
-            {
-                ((Button)current.findViewById(R.id.startButton)).setText("Demarrer");
-            }*/
-        }
-
     }
 
-    public static CmdListener getStatusListener() {
+    public static void updateBehaviorActivity() {
+            if(current instanceof  BehaviorActivity)
+                    ((BehaviorActivity) current).updateStartButtonText(behaviorStarted);
+    }
+
+
+    public static StatusListener getStatusListener() {
         return statusListener;
     }
 
-    public static void setStatusListener(CmdListener statusListener) {
+    public static void setStatusListener(StatusListener statusListener) {
         Utils.statusListener = statusListener;
-    }
-
-    public static EventListenerI getEventListener() {
-        return eventListener;
-    }
-
-    public static void setEventListener(EventListenerI eventListener) {
-        Utils.eventListener = eventListener;
     }
 }

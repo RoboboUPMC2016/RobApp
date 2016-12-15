@@ -148,6 +148,7 @@ public class BaseActivity extends AppCompatActivity
                 IRobMovementModule module = manager.getModuleInstance(IRobMovementModule.class);
                 IRobInterfaceModule rob  =   manager.getModuleInstance(IRobInterfaceModule.class);
                 rob.getRobInterface().setOperationMode((byte)1);
+               // module.
 
             }
             catch(Exception e)

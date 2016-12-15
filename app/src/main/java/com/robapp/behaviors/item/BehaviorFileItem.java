@@ -80,7 +80,6 @@ public class BehaviorFileItem implements BehaviorItemI
     @Override
     public void run() {
 
-        boolean event = false;
         boolean status = false;
         Acts act = null;
         try{
@@ -95,10 +94,6 @@ public class BehaviorFileItem implements BehaviorItemI
                 rob.getRobInterface().setOperationMode((byte)1);
 
                 act = new Acts(module);
-                Utils.getEventListener().subscribe(act);
-                event = true;
-                Utils.getStatusListener().subscribe(act);
-                status = true;
                 behavior.run(act);
             }
         }
@@ -107,10 +102,7 @@ public class BehaviorFileItem implements BehaviorItemI
         }
         finally{
             Utils.setBehaviorStarted(false);
-            if(event)
-                Utils.getEventListener().unsubscribe(act);
-            if(status)
-                Utils.getStatusListener().unsubscribe(act);
+            Utils.updateBehaviorActivity();
         }
 
 

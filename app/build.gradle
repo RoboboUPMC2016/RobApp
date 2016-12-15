@@ -37,5 +37,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.journeyapps:zxing-android-embedded:3.0.2@aar'
     compile 'com.google.zxing:core:3.3.0'
-    compile files('C:/Users/Arthur/GPSTL/RobApp/libs/RobDev.0.2.2.jar')
+    compile files('C:/Users/Arthur/GPSTL/RobApp/libs/RobDev.jar')
+
 }

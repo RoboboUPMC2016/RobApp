@@ -9,10 +9,10 @@ public class InfiniteRoundBehavior implements Behavior{
 		do{
 
 			// The robot will moves forward until a shock is detected,
-			actions.moveForward(Events.SHOCK_DETECTED);
+			actions.moveForward(Event.SHOCK_DETECTED);
 
 			// then it performs the opposite way
-			actions.moveBackward(Events.SHOCK_DETECTED);
+			actions.moveBackward(Event.SHOCK_DETECTED);
 
 		}while(true); // and starts again for the rest of its life !
 
