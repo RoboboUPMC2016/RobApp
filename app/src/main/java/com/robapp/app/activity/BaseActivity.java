@@ -118,13 +118,15 @@ public class BaseActivity extends AppCompatActivity
         } else if (id == R.id.nav_bluetooth) {
             robStarted = false;
             showRoboboDeviceSelectionDialog();
-
-
         } else if (id == R.id.nav_manage) {
             Intent intent = new Intent(Utils.getCurrentActivity(),FileExplorerActivity.class);
             Utils.getCurrentActivity().startActivity(intent);
         } else if (id == R.id.nav_share) {
             Intent intent = new Intent(Utils.getCurrentActivity(),QRCodeActivity.class);
+            Utils.getCurrentActivity().startActivity(intent);
+        } else if(id == R.id.nav_download)
+        {
+            Intent intent = new Intent(Utils.getCurrentActivity(),DownloadBehaviorActivity.class);
             Utils.getCurrentActivity().startActivity(intent);
         } else if (id == R.id.nav_behavior) {
            final BehaviorSelectionDialog dialog = new BehaviorSelectionDialog();

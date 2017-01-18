@@ -27,27 +27,31 @@ public class BehaviorFileItem implements BehaviorItemI
     private File file;
     private String name;
     private String url;
+    private int id;
 
     public BehaviorFileItem()
     {
        file = null;
         name = null;
         url = null;
+        id =-1;
     }
 
-    public BehaviorFileItem(File f)
+    public BehaviorFileItem(File f,int id)
     {
         this.file =f;
         StringTokenizer tok = new StringTokenizer(file.getName(),".");
         name = tok.nextToken();
         url = null;
+        this.id=id;
     }
 
-    public BehaviorFileItem(File f,String name)
+    public BehaviorFileItem(File f,String name,int id)
     {
         this.file = f;
         this.name = name;
         url = null;
+        this.id=id;
     }
 
     public File getFile() {
@@ -76,6 +80,16 @@ public class BehaviorFileItem implements BehaviorItemI
     public String getUrl()
     {
         return url;
+    }
+
+    public int getId()
+    {
+        return id;
+    }
+
+    public void setId(int id)
+    {
+        this.id = id;
     }
 
     @Override

@@ -69,6 +69,9 @@ public class XMLHandler extends DefaultHandler {
             File f = new File(tempVal);
             System.out.println(f);
             tempItem.setFile(f);
+        } else if(qName.equalsIgnoreCase("id"))
+        {
+            tempItem.setId(Integer.parseInt(tempVal));
         }
     }
 }

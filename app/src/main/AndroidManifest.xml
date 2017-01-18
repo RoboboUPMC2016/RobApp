@@ -42,7 +42,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".app.activity.BehaviorActivity" />
         </activity>
-        <activity android:name=".app.activity.DownloadBehaviorActivity"></activity>
+        <activity
+            android:name=".app.activity.DownloadBehaviorActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".app.activity.BehaviorActivity" />
+        </activity>
     </application>
 
 </manifest>

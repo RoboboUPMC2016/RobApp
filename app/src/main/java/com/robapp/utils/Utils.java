@@ -138,15 +138,32 @@ public class Utils {
 
     static public void saveDownloadFile(JSONObject obj,byte [] data) throws Exception {
 
-        String fileName = obj.getString("label")+".dex";
-        File f = new File(privateDir.getAbsolutePath()+ File.separator+fileName);
+        String fileName = obj.getString("filename");
+        File dir = new File(privateDir.getAbsolutePath()+File.separator+obj.getString("id"));
+
+        try{
+            if(dir.exists())
+                dir.delete();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        dir.mkdir();
+
+        File f = new File(privateDir.getAbsolutePath()+File.separator+obj.getString("id")+File.separator+fileName);
+        f.createNewFile();
         writeDataToFile(data,f);
 
 
         BehaviorFileItem item = new BehaviorFileItem();
-        item.setUrl(obj.getString("dex_url"));
+        item.setUrl(obj.getString("behaviordetails_url"));
         item.setName(obj.getString("label"));
+
+
         item.setFile(f);
+        item.setId(Integer.parseInt(obj.getString("id")));
 
         behaviors.add(item);
 
@@ -241,9 +258,11 @@ public class Utils {
 
             StringBuffer buff = new StringBuffer("");
             buff.append("<behavior>\n");
+            buff.append("<id>"+((BehaviorFileItem) item).getId()+"</id>\n");
             buff.append("<name>"+item.getName()+"</name>\n");
             buff.append("<url>"+((BehaviorFileItem) item).getUrl()+"</url>\n");
             buff.append("<file>"+((BehaviorFileItem) item).getFile().getAbsolutePath()+"</file>\n");
+
             buff.append("</behavior>\n");
 
             writer.write(buff.toString());

@@ -47,18 +47,23 @@ public class DownloadBehaviorActivity extends BaseActivity implements Response.L
         setupDrawer();
 
 
-        myList = (ListView)findViewById(R.id.list);
+        myList  = (ListView)findViewById(R.id.list);
         adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,new LinkedList<String>());
-        myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        myList.setAdapter(adapter);
+        myList.setOnItemClickListener(new ListView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String label  = adapter.getItem(position);
+                int ind = label.lastIndexOf(" ");
+                String idB = label.substring(1+ind);
+                System.out.println("id ==> "+idB);
                 JSONObject obj = null;
                 for(int i = 0;i< result.length();i++)
                 {
                     try {
-                        if(obj.getString("label").equals(label))
+                        obj = result.getJSONObject(i);
+                        if(obj.getString("id").equals(idB))
                             downloadFile(obj);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -75,7 +80,7 @@ public class DownloadBehaviorActivity extends BaseActivity implements Response.L
     @Override
     public void onResponse(JSONObject response) {
         try {
-            System.out.println(response.toString(3));
+            System.out.println(response.toString(2));
             result = response.getJSONArray("behaviors");
 
         } catch (JSONException e) {
@@ -89,6 +94,7 @@ public class DownloadBehaviorActivity extends BaseActivity implements Response.L
                 System.out.println("i : "+i);
                 JSONObject b = result.getJSONObject(i);
                 String label = b.getString("label");
+                label+=" "+b.getString("id");
                 System.out.println("label : "+label);
                 list.addLast(label);
             } catch (JSONException e) {
