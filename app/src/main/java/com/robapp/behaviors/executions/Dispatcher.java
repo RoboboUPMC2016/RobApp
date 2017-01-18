@@ -34,10 +34,14 @@ public class Dispatcher {
 
     public void dispatchEvent(Event e)
     {
-        for(EventHandlerI handler : handlers)
+        synchronized (handlers)
         {
-            if(handler.handleEvent(e))
-                  return;
+            for(EventHandlerI handler : handlers)
+            {
+                if(handler.handleEvent(e))
+                    return;
+            }
         }
+
     }
 }

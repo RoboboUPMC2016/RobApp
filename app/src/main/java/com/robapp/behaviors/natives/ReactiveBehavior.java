@@ -20,16 +20,10 @@ public class ReactiveBehavior implements Behavior {
             @Override
             public void run() {
                 actions.stop();
-                if(cpt % 2 == 0) {
-                    System.out.println("Emb");
-                    actions.setEmotion(Emotion.Embarrased);
-                }
-                else
-                {
-                    System.out.println("Sad");
-                    actions.setEmotion(Emotion.Sad);
-                }
-                cpt++;
+                actions.speak("Shock Detected");
+                actions.setEmotion(Emotion.Surprised);
+                actions.moveBackward(2);
+                actions.turnRight();
             }
 
         };
@@ -37,8 +31,11 @@ public class ReactiveBehavior implements Behavior {
         actions.when(Event.SHOCK_DETECTED, run);
         while (true)
         {
-            actions.moveForward(3);
-            actions.turnLeft();
+            actions.setEmotion(Emotion.Smyling);
+            actions.moveForward(Event.IRFRONT);
+            actions.moveBackward(1);
+            actions.turnRight();
+
         }
     }
 }

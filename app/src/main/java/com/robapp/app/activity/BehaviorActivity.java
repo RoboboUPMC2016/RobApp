@@ -27,6 +27,7 @@ import com.mytechia.robobo.rob.movement.IRobMovementModule;
 import com.robapp.R;
 import com.robapp.app.dialog.Launcher;
 
+import com.robapp.behaviors.executions.BehaviorThread;
 import com.robapp.utils.Utils;
 
 import java.io.File;
@@ -39,7 +40,7 @@ public class BehaviorActivity extends BaseActivity implements IEmotionListener, 
 
     Button startButton;
     TextView behaviorName;
-    private Thread thread;
+    private BehaviorThread thread;
     WebView myWebView;
     Launcher launcher;
 
@@ -100,7 +101,7 @@ public class BehaviorActivity extends BaseActivity implements IEmotionListener, 
 
 
     @Override
-        public void newEmotion(Emotion emotion) {
+    public void newEmotion(final Emotion emotion) {
 
         final Emotion emotionLocal = emotion;
 
@@ -108,20 +109,26 @@ public class BehaviorActivity extends BaseActivity implements IEmotionListener, 
             @Override
             public void run() {
 
+
                 switch(emotionLocal) {
-                    case NORMAL: myWebView.loadUrl("javascript:emotionNormal()"); break;
-                    case HAPPY: myWebView.loadUrl("javascript:emotionHappy()"); break;
-                    case ANGRY: myWebView.loadUrl("javascript:emotionAngry()"); break;
-                    case LAUGHING: myWebView.loadUrl("javascript:emotionLaughing()"); break;
-                    case EMBARRASED: myWebView.loadUrl("javascript:emotionEmbarrased()"); break;
-                    case SAD: myWebView.loadUrl("javascript:emotionSad()"); break;
-                    case SURPRISED: myWebView.loadUrl("javascript:emotionSurprised()"); break;
-                    case SMYLING: myWebView.loadUrl("javascript:emotionSmyling()"); break;
-                    case IN_LOVE: myWebView.loadUrl("javascript:emotionInLove()"); break;
+                    case NORMAL: BehaviorActivity.this.myWebView.loadUrl("javascript:emotionNormal()"); break;
+                    case HAPPY: BehaviorActivity.this.myWebView.loadUrl("javascript:emotionHappy()"); break;
+                    case ANGRY: BehaviorActivity.this.myWebView.loadUrl("javascript:emotionAngry()"); break;
+                    case LAUGHING: BehaviorActivity.this.myWebView.loadUrl("javascript:emotionLaughing()"); break;
+                    case EMBARRASED: BehaviorActivity.this.myWebView.loadUrl("javascript:emotionEmbarrased()"); break;
+                    case SAD: BehaviorActivity.this.myWebView.loadUrl("javascript:emotionSad()"); break;
+                    case SURPRISED: BehaviorActivity.this.myWebView.loadUrl("javascript:emotionSurprised()"); break;
+                    case SMYLING: BehaviorActivity.this.myWebView.loadUrl("javascript:emotionSmyling()"); break;
+                    case IN_LOVE: BehaviorActivity.this.myWebView.loadUrl("javascript:emotionInLove()"); break;
+
                 }
+                System.out.println("New Emotion : "+emotion);
+                myWebView.reload();
 
             }
         });
+
+
     }
 
     @Override
@@ -156,10 +163,14 @@ public class BehaviorActivity extends BaseActivity implements IEmotionListener, 
                 thread = launcher.getThread();
                 if(thread != null)
                 {
+                    Handler handler = new Handler();
                     Utils.setBehaviorStarted(true);
                     updateStartButtonText(true);
                     Utils.getRoboboManager().getModuleInstance(IEmotionModule.class).subscribe(this);
+                    Utils.setThread(thread);
+
                     thread.start();
+
                 }
             }
             catch(Exception e)
@@ -180,6 +191,7 @@ public class BehaviorActivity extends BaseActivity implements IEmotionListener, 
                 e.printStackTrace();
             }
             thread = null;
+            Utils.setThread(null);
         }
     }
 }

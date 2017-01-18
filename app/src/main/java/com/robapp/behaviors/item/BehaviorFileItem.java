@@ -7,6 +7,7 @@ import com.mytechia.robobo.rob.movement.IRobMovementModule;
 import com.robapp.R;
 import com.robapp.app.activity.BehaviorActivity;
 import com.robapp.behaviors.actions.Acts;
+import com.robapp.behaviors.executions.ContextManager;
 import com.robapp.behaviors.loader.BehaviorClassLoader;
 import com.robapp.behaviors.interfaces.BehaviorItemI;
 import com.robapp.utils.Utils;
@@ -92,7 +93,7 @@ public class BehaviorFileItem implements BehaviorItemI
                 IRobMovementModule module = Utils.getRoboboManager().getModuleInstance(IRobMovementModule.class);
                 IRobInterfaceModule rob =  Utils.getRoboboManager().getModuleInstance(IRobInterfaceModule.class);
                 rob.getRobInterface().setOperationMode((byte)1);
-
+                ContextManager.initContext();
                 act = new Acts(module);
                 behavior.run(act);
             }
@@ -104,10 +105,6 @@ public class BehaviorFileItem implements BehaviorItemI
             Utils.setBehaviorStarted(false);
             Utils.updateBehaviorActivity();
         }
-
-
-
-
 
     }
 

@@ -27,7 +27,7 @@ public class StatusListener implements IRobStatusListener {
 
     int movementEnd;
     int movementEnd1;
-    private static int IRTHRESHOLD = 100;
+    private  final int IRTHRESHOLD = 100;
 
     public StatusListener()
     {
@@ -92,8 +92,8 @@ public class StatusListener implements IRobStatusListener {
                         case IRSensorStatus7:
                         case IRSensorStatus8:
                         case IRSensorStatus9:
-                            if(IR.getDistance() > IRTHRESHOLD)
-                                ContextManager.dispatcheEvent(Event.IRFRONT);
+                            if(IR.getDistance() > IRTHRESHOLD*2)
+                                ContextManager.dispatcheEvent(Event.IRBACK);
                             break;
                     }
                 }
@@ -111,7 +111,7 @@ public class StatusListener implements IRobStatusListener {
 
     @Override
     public void robCommunicationError(InternalErrorException e) {
-
+        System.out.println("Error Communication  ====> "+e.getMessage());
     }
 
 }

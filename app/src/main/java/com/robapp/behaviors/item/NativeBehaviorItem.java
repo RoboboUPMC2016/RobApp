@@ -7,6 +7,7 @@ import com.mytechia.robobo.rob.movement.IRobMovementModule;
 import com.robapp.R;
 import com.robapp.app.activity.BehaviorActivity;
 import com.robapp.behaviors.actions.Acts;
+import com.robapp.behaviors.executions.ContextManager;
 import com.robapp.behaviors.interfaces.BehaviorItemI;
 import com.robapp.utils.Utils;
 
@@ -45,6 +46,7 @@ public class NativeBehaviorItem implements BehaviorItemI {
             IRobInterfaceModule rob =  Utils.getRoboboManager().getModuleInstance(IRobInterfaceModule.class);
             rob.getRobInterface().setOperationMode((byte)1);
             act = new Acts(module);
+            ContextManager.initContext();
             behavior.run(act);
         }
         catch(Exception e)

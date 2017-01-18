@@ -24,7 +24,6 @@ public class WhenEventHandler implements EventHandlerI {
 
         if(event.equals(this.event))
         {
-            System.out.println("When Handler");
             ContextManager.executeInNewContext(runnable);
             return true;
         }

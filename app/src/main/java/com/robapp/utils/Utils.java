@@ -13,8 +13,10 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.mytechia.robobo.framework.RoboboManager;
 import com.robapp.app.activity.BaseActivity;
 import com.robapp.app.activity.BehaviorActivity;
+import com.robapp.behaviors.executions.BehaviorThread;
 import com.robapp.behaviors.item.BehaviorFileItem;
 import com.robapp.behaviors.listener.StatusListener;
+import com.robapp.behaviors.natives.AngryRobotBehavior;
 import com.robapp.behaviors.natives.DummyBehavior;
 import com.robapp.behaviors.item.NativeBehaviorItem;
 import com.robapp.behaviors.natives.InfiniteRoundBehavior;
@@ -24,8 +26,12 @@ import com.robapp.behaviors.natives.MyBehavior;
 import com.robapp.behaviors.natives.SquareTripBehavior;
 import com.robapp.behaviors.interfaces.BehaviorItemI;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -49,6 +55,7 @@ public class Utils {
     public  static String defaultUrl ="http://robhub.esy.es/";
     private static final int QRCodeSize = 400;
     private static boolean behaviorStarted = false;
+    private static BehaviorThread thread;
 
     private static StatusListener statusListener;
 
@@ -65,6 +72,7 @@ public class Utils {
         behaviors.add(new NativeBehaviorItem("Shock Behavior",new MyBehavior()));
         behaviors.add(new NativeBehaviorItem("Infinite Shock Behavior",new InfiniteRoundBehavior()));
         behaviors.add(new NativeBehaviorItem("Reactive Behavior",new ReactiveBehavior()));
+        behaviors.add(new NativeBehaviorItem("Angry", new AngryRobotBehavior()));
 
 
         privateDir = context.getDir("behavior_downloaded",Context.MODE_PRIVATE);
@@ -108,6 +116,48 @@ public class Utils {
     static public BaseActivity getCurrentActivity()
     {
         return current;
+    }
+
+    static public void writeDataToFile(byte [] data, File f)
+    {
+        try {
+            if(f.exists())
+                f.delete();
+
+            FileOutputStream out = new FileOutputStream(f);
+            out.write(data);
+            out.close();
+            f.createNewFile();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static public void saveDownloadFile(JSONObject obj,byte [] data) throws Exception {
+
+        String fileName = obj.getString("label")+".dex";
+        File f = new File(privateDir.getAbsolutePath()+ File.separator+fileName);
+        writeDataToFile(data,f);
+
+
+        BehaviorFileItem item = new BehaviorFileItem();
+        item.setUrl(obj.getString("dex_url"));
+        item.setName(obj.getString("label"));
+        item.setFile(f);
+
+        behaviors.add(item);
+
+        File xmlFile = new File(privateDir.getAbsoluteFile()+ File.separator+xmlFileName);
+
+        if(xmlFile.exists())
+            xmlFile.delete();
+
+        createXMLFile(xmlFile);
+
+
     }
 
     static public File moveFileToDir(File f,File dir) throws Exception
@@ -245,5 +295,13 @@ public class Utils {
 
     public static void setStatusListener(StatusListener statusListener) {
         Utils.statusListener = statusListener;
+    }
+
+    public static BehaviorThread getThread() {
+        return thread;
+    }
+
+    public static void setThread(BehaviorThread thread) {
+        Utils.thread = thread;
     }
 }
