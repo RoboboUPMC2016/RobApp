@@ -96,7 +96,8 @@ public class Acts implements Actions{
             this.wait();
         }
         catch(Exception e){
-                e.printStackTrace();
+            e.printStackTrace();
+            throw new StopBehaviorException("Stop wait(" + event + ")");
         }
 
 
@@ -204,7 +205,7 @@ public class Acts implements Actions{
                 moveModule.turnLeftAngle(VELOCITY, (int) (90 * 4.89));
             ContextManager.unlockAction();
                 waitCommandEnd();
-        }catch (InternalErrorException e) {
+        } catch (InternalErrorException e) {
             e.printStackTrace();
         }
     }

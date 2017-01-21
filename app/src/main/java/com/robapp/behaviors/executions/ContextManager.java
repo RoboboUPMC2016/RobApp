@@ -111,4 +111,9 @@ public class ContextManager {
     {
         lastAction.run();
     }
+
+    public static void stopExecution()
+    {
+        context.stopExecution();
+    }
 }

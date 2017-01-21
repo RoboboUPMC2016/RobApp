@@ -39,7 +39,6 @@ import ch.qos.logback.core.net.SyslogOutputStream;
 public class BehaviorActivity extends BaseActivity implements IEmotionListener, DialogInterface.OnDismissListener {
 
     Button startButton;
-    TextView behaviorName;
     private BehaviorThread thread;
     WebView myWebView;
     Launcher launcher;
@@ -52,7 +51,6 @@ public class BehaviorActivity extends BaseActivity implements IEmotionListener, 
         setContentView(R.layout.activity_behavior);
         setupDrawer();
 
-
         if(!Utils.isBehaviorStarted())
             thread = null;
         startButton = (Button) findViewById(R.id.startButton);
@@ -60,6 +58,7 @@ public class BehaviorActivity extends BaseActivity implements IEmotionListener, 
             @Override
             public void onClick(View v) {
 
+                
                 if(!robStarted)
                 {
                     showRoboboDeviceSelectionDialog();
@@ -78,10 +77,6 @@ public class BehaviorActivity extends BaseActivity implements IEmotionListener, 
 
             }
         });
-
-        behaviorName =(TextView)findViewById(R.id.nameBehavior);
-        if(selectedBehavior != null)
-            behaviorName.setText(selectedBehavior.getName());
 
         myWebView = (WebView) findViewById(R.id.emotionRob);
         WebSettings webSettings = myWebView.getSettings();

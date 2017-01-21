@@ -13,9 +13,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 
 import com.mytechia.robobo.framework.RoboboManager;
+import com.mytechia.robobo.framework.service.RoboboService;
 import com.mytechia.robobo.framework.service.RoboboServiceHelper;
 import com.mytechia.robobo.rob.BluetoothRobInterfaceModule;
 import com.mytechia.robobo.rob.IRobInterfaceModule;
@@ -60,13 +62,14 @@ public class BaseActivity extends AppCompatActivity
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if(selectedBehavior != null)
+            toolbar.setTitle(selectedBehavior.getName());
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,R.string.drawer_open, R.string.drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -113,9 +116,7 @@ public class BaseActivity extends AppCompatActivity
         if(Utils.isBehaviorStarted())
             return false;
 
-        if (id == R.id.nav_camera) {
-
-        } else if (id == R.id.nav_bluetooth) {
+        if (id == R.id.nav_bluetooth) {
             robStarted = false;
             showRoboboDeviceSelectionDialog();
         } else if (id == R.id.nav_manage) {
@@ -187,7 +188,8 @@ public class BaseActivity extends AppCompatActivity
 
             @Override
             public void bluetoothIsDisabled() {
-                finish();
+                Toast.makeText(BaseActivity.this, "Bluetooth disabled", Toast.LENGTH_SHORT).show();
+
             }
 
         });
@@ -201,17 +203,28 @@ public class BaseActivity extends AppCompatActivity
             @Override
             public void run() {
                 //wait to dialog shown during the startup of the framework and the bluetooth connection
+                if(dial != null)
+                    return;
+
                 dial = ProgressDialog.show(Utils.getCurrentActivity(),
                         getString(R.string.DialogConnexionTitle),
                         getString(R.string.DialogConnexionMsg));
             }
         });
 
-        roboboHelper = new RoboboServiceHelper(this,new RobHelperListener());
-
-        Bundle options = new Bundle();
-        options.putString(BluetoothRobInterfaceModule.ROBOBO_BT_NAME_OPTION,roboboBluetoothName);
-        roboboHelper.bindRoboboService(options);
+        try{
+            roboboHelper = new RoboboServiceHelper(this,new RobHelperListener());
+            Bundle options = new Bundle();
+            options.putString(BluetoothRobInterfaceModule.ROBOBO_BT_NAME_OPTION,roboboBluetoothName);
+            roboboHelper.bindRoboboService(options);
+        }
+        catch(Exception e)
+        {
+            if(dial != null)
+                dial.dismiss();
+            Toast.makeText(BaseActivity.this, "Connexion failure", Toast.LENGTH_LONG).show();
+            finish();
+        }
 
 
 
@@ -219,6 +232,9 @@ public class BaseActivity extends AppCompatActivity
 
     public void showErrorDialog(final String msg) {
 
+        if(dial != null)
+            dial.dismiss();
+        dial = null;
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -229,6 +245,8 @@ public class BaseActivity extends AppCompatActivity
                 builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(BaseActivity.this, "Connexion failure", Toast.LENGTH_LONG).show();
+                        dialog.dismiss();
                         finish();
                     }
                 })

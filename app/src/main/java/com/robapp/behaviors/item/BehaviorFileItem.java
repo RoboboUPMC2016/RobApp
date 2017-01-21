@@ -1,6 +1,7 @@
 package com.robapp.behaviors.item;
 
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.mytechia.robobo.rob.IRobInterfaceModule;
 import com.mytechia.robobo.rob.movement.IRobMovementModule;
@@ -98,7 +99,16 @@ public class BehaviorFileItem implements BehaviorItemI
         boolean status = false;
         Acts act = null;
         try{
-            Class<?> myClass =  BehaviorClassLoader.getClassFromDexFile(Utils.getCurrentActivity().getApplicationContext(),file.getAbsolutePath(),getName());
+            String filename = file.getName();
+            int ind = filename.indexOf(".");
+            String className = filename.substring(0,ind);
+            System.out.println("Classe Name : "+className);
+            System.out.println("File exists : "+file.exists());
+            System.out.println("File can read : "+file.canRead());
+            System.out.println("File can execute : "+file.canExecute());
+
+            System.out.println("File can write : "+file.canWrite());
+            Class<?> myClass =  BehaviorClassLoader.getClassFromDexFile(Utils.getCurrentActivity().getApplicationContext(),file.getAbsolutePath(),className);
             Object obj =  myClass.newInstance();
 
             if(obj instanceof Behavior)
@@ -114,6 +124,7 @@ public class BehaviorFileItem implements BehaviorItemI
         }
         catch(Exception e){
             e.printStackTrace();
+            //Toast.makeText(Utils.getCurrentActivity().getApplicationContext(),"Error : "+e.getMessage(),Toast.LENGTH_SHORT);
         }
         finally{
             Utils.setBehaviorStarted(false);

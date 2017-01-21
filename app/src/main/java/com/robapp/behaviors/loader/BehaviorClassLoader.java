@@ -1,6 +1,7 @@
 package com.robapp.behaviors.loader;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import java.io.File;
 
@@ -25,13 +26,15 @@ public final class BehaviorClassLoader extends PathClassLoader {
 
         try{
 
+            File f = new File(dexPath);
+            System.out.println("File : "+f.length());
+
             File dexOutputDir = context.getCodeCacheDir();
             DexClassLoader classLoader = new DexClassLoader(dexPath,dexOutputDir.getAbsolutePath(),null,context.getClassLoader());
             Class<?> behaviorClass = (Class<?>)classLoader.loadClass(className);
             return behaviorClass;
 
         }catch(Exception ex){
-            System.out.println();
             ex.printStackTrace();
         }
         return null;

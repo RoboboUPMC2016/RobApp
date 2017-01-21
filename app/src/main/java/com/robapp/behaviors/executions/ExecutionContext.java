@@ -141,5 +141,11 @@ public class ExecutionContext {
         currentThread = Utils.getThread();
     }
 
-
+    protected void stopExecution()
+    {
+        if(child != null)
+            child.stopExecution();
+        currentThread.interrupt();
+        child = null;
+    }
 }
