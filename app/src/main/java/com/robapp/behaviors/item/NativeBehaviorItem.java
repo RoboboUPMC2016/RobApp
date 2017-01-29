@@ -1,17 +1,12 @@
 package com.robapp.behaviors.item;
 
-import android.widget.Button;
-
 import com.mytechia.robobo.rob.IRobInterfaceModule;
 import com.mytechia.robobo.rob.movement.IRobMovementModule;
-import com.robapp.R;
-import com.robapp.app.activity.BehaviorActivity;
 import com.robapp.behaviors.actions.Acts;
 import com.robapp.behaviors.executions.ContextManager;
 import com.robapp.behaviors.interfaces.BehaviorItemI;
-import com.robapp.utils.Utils;
+import com.robapp.tools.Utils;
 
-import robdev.Actions;
 import robdev.Behavior;
 
 /**

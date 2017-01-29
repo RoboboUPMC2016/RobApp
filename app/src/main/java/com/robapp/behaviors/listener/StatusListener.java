@@ -8,12 +8,8 @@ import com.mytechia.robobo.rob.IRSensorStatus;
 import com.mytechia.robobo.rob.IRobStatusListener;
 import com.mytechia.robobo.rob.MotorStatus;
 import com.mytechia.robobo.rob.WallConnectionStatus;
-import com.robapp.behaviors.actions.Acts;
 import com.robapp.behaviors.executions.ContextManager;
-import com.robapp.behaviors.interfaces.CmdHandlerI;
-import com.robapp.utils.Utils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import robdev.Event;

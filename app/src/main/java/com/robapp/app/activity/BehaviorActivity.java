@@ -1,25 +1,13 @@
 package com.robapp.app.activity;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.TextView;
 
-import com.mytechia.robobo.framework.exception.ModuleNotFoundException;
-import com.mytechia.robobo.framework.hri.emotion.DefaultEmotionModule;
 import com.mytechia.robobo.framework.hri.emotion.Emotion;
 import com.mytechia.robobo.framework.hri.emotion.IEmotionListener;
 import com.mytechia.robobo.framework.hri.emotion.IEmotionModule;
@@ -27,19 +15,12 @@ import com.mytechia.robobo.rob.movement.IRobMovementModule;
 import com.robapp.R;
 import com.robapp.app.dialog.Launcher;
 
-import com.robapp.behaviors.executions.BehaviorThread;
-import com.robapp.utils.Utils;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Properties;
-
-import ch.qos.logback.core.net.SyslogOutputStream;
+import com.robapp.behaviors.executions.ContextManager;
+import com.robapp.tools.Utils;
 
 public class BehaviorActivity extends BaseActivity implements IEmotionListener, DialogInterface.OnDismissListener {
 
     Button startButton;
-    private BehaviorThread thread;
     WebView myWebView;
     Launcher launcher;
 
@@ -51,14 +32,12 @@ public class BehaviorActivity extends BaseActivity implements IEmotionListener, 
         setContentView(R.layout.activity_behavior);
         setupDrawer();
 
-        if(!Utils.isBehaviorStarted())
-            thread = null;
         startButton = (Button) findViewById(R.id.startButton);
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                
+
                 if(!robStarted)
                 {
                     showRoboboDeviceSelectionDialog();
@@ -155,14 +134,13 @@ public class BehaviorActivity extends BaseActivity implements IEmotionListener, 
         {
             try{
 
-                thread = launcher.getThread();
+                Thread thread = launcher.getThread();
                 if(thread != null)
                 {
                     Handler handler = new Handler();
                     Utils.setBehaviorStarted(true);
                     updateStartButtonText(true);
                     Utils.getRoboboManager().getModuleInstance(IEmotionModule.class).subscribe(this);
-                    Utils.setThread(thread);
 
                     thread.start();
 
@@ -177,16 +155,15 @@ public class BehaviorActivity extends BaseActivity implements IEmotionListener, 
     }
 
     public void stopBehavior(){
-        if(thread != null) {
-            thread.interrupt();
+        if(Utils.isBehaviorStarted()) {
+            ContextManager.stopExecution();
+            Utils.setBehaviorStarted(false);
             try {
                 IRobMovementModule module = Utils.getRoboboManager().getModuleInstance(IRobMovementModule.class);
                 module.stop();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            thread = null;
-            Utils.setThread(null);
         }
     }
 }

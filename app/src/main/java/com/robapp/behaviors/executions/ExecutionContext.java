@@ -3,7 +3,6 @@ package com.robapp.behaviors.executions;
 import com.robapp.behaviors.listener.CmdHandler;
 import com.robapp.behaviors.interfaces.EventHandlerI;
 import com.robapp.behaviors.listener.HandlerListener;
-import com.robapp.utils.Utils;
 
 import robdev.Event;
 
@@ -138,7 +137,7 @@ public class ExecutionContext {
 
     protected void initCurrentThread()
     {
-        currentThread = Utils.getThread();
+        currentThread = Thread.currentThread();
     }
 
     protected void stopExecution()

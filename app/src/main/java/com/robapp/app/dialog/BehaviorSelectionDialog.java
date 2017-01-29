@@ -3,17 +3,14 @@ package com.robapp.app.dialog;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
 import com.robapp.R;
 import com.robapp.behaviors.interfaces.BehaviorItemI;
-import com.robapp.utils.Utils;
+import com.robapp.tools.Utils;
 
 import java.util.ArrayList;
-import java.util.Set;
 
 /** A pop-up dialog that asks the user to select a particular Robobo bluetooth device
  *

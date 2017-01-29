@@ -1,27 +1,17 @@
 package com.robapp.behaviors.listener;
 
-import com.mytechia.commons.framework.exception.InternalErrorException;
 import com.mytechia.robobo.framework.RoboboManager;
 import com.mytechia.robobo.framework.hri.emotion.IEmotionModule;
 import com.mytechia.robobo.framework.misc.shock.IShockDetectionListener;
 import com.mytechia.robobo.framework.misc.shock.IShockDetectionModule;
 import com.mytechia.robobo.framework.misc.shock.ShockCategory;
 import com.mytechia.robobo.framework.service.RoboboServiceHelper;
-import com.mytechia.robobo.rob.BatteryStatus;
-import com.mytechia.robobo.rob.FallStatus;
-import com.mytechia.robobo.rob.GapStatus;
-import com.mytechia.robobo.rob.IRSensorStatus;
 import com.mytechia.robobo.rob.IRob;
 import com.mytechia.robobo.rob.IRobInterfaceModule;
-import com.mytechia.robobo.rob.IRobStatusListener;
-import com.mytechia.robobo.rob.MotorStatus;
-import com.mytechia.robobo.rob.WallConnectionStatus;
 import com.robapp.app.activity.BaseActivity;
 import com.robapp.app.activity.BehaviorActivity;
 import com.robapp.behaviors.executions.ContextManager;
-import com.robapp.utils.Utils;
-
-import java.util.Collection;
+import com.robapp.tools.Utils;
 
 import robdev.Event;
 

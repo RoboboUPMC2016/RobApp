@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 
 import com.mytechia.robobo.framework.RoboboManager;
-import com.mytechia.robobo.framework.service.RoboboService;
 import com.mytechia.robobo.framework.service.RoboboServiceHelper;
 import com.mytechia.robobo.rob.BluetoothRobInterfaceModule;
 import com.mytechia.robobo.rob.IRobInterfaceModule;
@@ -26,10 +25,11 @@ import com.robapp.R;
 import com.robapp.app.dialog.BehaviorSelectionDialog;
 import com.robapp.app.dialog.RobDeviceSelectionDialog;
 import com.robapp.behaviors.interfaces.BehaviorItemI;
+import com.robapp.behaviors.item.BehaviorFileItem;
 import com.robapp.behaviors.listener.RobHelperListener;
-import com.robapp.utils.Utils;
+import com.robapp.tools.Utils;
 
-import java.util.ArrayList;
+import java.io.IOException;
 
 /**
  * Created by Arthur on 03/11/2016.
@@ -56,7 +56,11 @@ public class BaseActivity extends AppCompatActivity
         Utils.setCurrentActivity(this);
         if(!initied)
         {
-            Utils.init(getApplicationContext());
+            try {
+                Utils.init(getApplicationContext());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             selectedBehavior = Utils.getAllItem().get(0);
             initied = true;
         }
@@ -143,6 +147,29 @@ public class BaseActivity extends AppCompatActivity
                 {}
             });
             dialog.show(getFragmentManager(),"Selection Comportement");
+        }
+        else if (id == R.id.nav_behavior_delete) {
+            final BehaviorSelectionDialog dialog = new BehaviorSelectionDialog();
+            dialog.setListener(new BehaviorSelectionDialog.Listener() {
+                @Override
+                public void behaviorSelected(BehaviorItemI item) {
+                    if(!(item instanceof BehaviorFileItem))
+                        return;
+
+                    Utils.removeBehavior((BehaviorFileItem) item);
+                    if(selectedBehavior == item)
+                    {
+                        selectedBehavior = Utils.getAllItem().get(0);
+                        Intent intent = new Intent(Utils.getCurrentActivity(),BehaviorActivity.class);
+                        Utils.getCurrentActivity().startActivity(intent);
+                    }
+
+                }
+
+                public void selectionCancelled()
+                {}
+            });
+            dialog.show(getFragmentManager(),"Delete Comportement");
         }
         else if(id == R.id.nav_reset)
         {

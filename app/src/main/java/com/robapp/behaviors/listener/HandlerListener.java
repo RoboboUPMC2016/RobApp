@@ -1,9 +1,6 @@
 package com.robapp.behaviors.listener;
 
-import com.robapp.behaviors.executions.HandlerManager;
 import com.robapp.behaviors.interfaces.HandlerListenerI;
-
-import java.util.LinkedList;
 
 /**
  * Created by Arthur on 05/01/2017.

@@ -1,22 +1,14 @@
 package com.robapp.app.activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.ViewFlipper;
 
 import com.google.zxing.WriterException;
 import com.robapp.R;
-import com.robapp.app.adapter.FileExplorerAdapter;
 import com.robapp.app.dialog.BehaviorSelectionDialog;
 import com.robapp.behaviors.interfaces.BehaviorItemI;
 import com.robapp.behaviors.item.BehaviorFileItem;
-import com.robapp.utils.Utils;
-
-import java.io.File;
+import com.robapp.tools.Utils;
 
 
 public class QRCodeActivity extends BaseActivity {

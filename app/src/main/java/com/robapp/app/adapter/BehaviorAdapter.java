@@ -4,23 +4,17 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.robapp.R;
-import com.robapp.app.activity.BaseActivity;
 import com.robapp.behaviors.item.NativeBehaviorItem;
 import com.robapp.behaviors.interfaces.BehaviorItemI;
 
-import com.robapp.utils.Utils;
-
-import org.w3c.dom.Text;
+import com.robapp.tools.Utils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 /**

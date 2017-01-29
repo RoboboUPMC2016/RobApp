@@ -1,44 +1,42 @@
 package com.robapp.app.activity;
 
-import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
+import android.content.ClipData;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.robapp.R;
-import com.robapp.utils.FileRequest;
-import com.robapp.utils.Utils;
+import com.robapp.app.adapter.BehaviorDownloadAdapter;
+import com.robapp.app.adapter.ItemDownload;
+import com.robapp.tools.FileRequest;
+import com.robapp.tools.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.FileOutputStream;
-import java.net.ResponseCache;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class DownloadBehaviorActivity extends BaseActivity implements Response.Listener<JSONObject>,Response.ErrorListener {
 
-    private static final String url = "http://robhub.esy.es/api/behaviors.php";
+    private static final String url = "http://robhub.esy.es/api/getbehaviors.php";
     private ListView myList;
-    private ArrayAdapter<String> adapter;
+    private BehaviorDownloadAdapter adapter;
     private RequestQueue queue;
-    private JSONArray result;
+    private SearchView search;
+    private ArrayList<ItemDownload>list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,28 +45,23 @@ public class DownloadBehaviorActivity extends BaseActivity implements Response.L
         setupDrawer();
 
 
+        list = new ArrayList<ItemDownload>();
         myList  = (ListView)findViewById(R.id.list);
-        adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,new LinkedList<String>());
+        adapter = new BehaviorDownloadAdapter(new ArrayList<ItemDownload>(),this);
         myList.setAdapter(adapter);
-        myList.setOnItemClickListener(new ListView.OnItemClickListener() {
+        search = (SearchView)findViewById(R.id.searchView);
+
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.filtre(list,query);
+                return false;
+            }
 
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String label  = adapter.getItem(position);
-                int ind = label.lastIndexOf(" ");
-                String idB = label.substring(1+ind);
-                System.out.println("id ==> "+idB);
-                JSONObject obj = null;
-                for(int i = 0;i< result.length();i++)
-                {
-                    try {
-                        obj = result.getJSONObject(i);
-                        if(obj.getString("id").equals(idB))
-                            downloadFile(obj);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+            public boolean onQueryTextChange(String newText) {
+                adapter.filtre(list,newText);
+                return false;
             }
         });
         queue = Volley.newRequestQueue(this);
@@ -81,31 +74,36 @@ public class DownloadBehaviorActivity extends BaseActivity implements Response.L
     public void onResponse(JSONObject response) {
         try {
             System.out.println(response.toString(2));
-            result = response.getJSONArray("behaviors");
+            JSONArray result = response.getJSONArray("behaviors");
+
+            for(int i = 0;i< result.length();i++)
+            {
+                try {
+                    JSONObject b = result.getJSONObject(i);
+                    String id = b.getString("id");
+                    String label = b.getString("label");
+                    String desc = b.getString("desc");
+                    String dexURL = b.getString("dex_url");
+                    String note = b.get("mark")+"";
+                    String detailsURL = b.getString("behaviordetails_url");
+                    String filename =b.getString("filename");
+
+                    ItemDownload item = new ItemDownload(id,label,dexURL,detailsURL,note,desc,filename);
+                    list.add(item);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            adapter.clear();
+            adapter.addAll(list);
+            adapter.notifyDataSetChanged();
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        LinkedList<String> list = new LinkedList<String>();
 
-        for(int i = 0;i< result.length();i++)
-        {
-            try {
-                System.out.println("i : "+i);
-                JSONObject b = result.getJSONObject(i);
-                String label = b.getString("label");
-                label+=" "+b.getString("id");
-                System.out.println("label : "+label);
-                list.addLast(label);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-        }
-
-        adapter.clear();
-        adapter.addAll(list);
-        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -115,9 +113,8 @@ public class DownloadBehaviorActivity extends BaseActivity implements Response.L
     }
 
 
-    public void downloadFile(final JSONObject obj) throws Exception {
+    public void downloadFile(final ItemDownload item) throws Exception {
 
-        String mUrl= obj.getString("dex_url");
 
         Response.Listener<byte[]> success =  new Response.Listener<byte[]>() {
 
@@ -127,7 +124,7 @@ public class DownloadBehaviorActivity extends BaseActivity implements Response.L
                 try {
                     if (response!=null) {
 
-                        Utils.saveDownloadFile(obj,response);
+                        Utils.saveDownloadFile(item,response);
                         Toast.makeText(DownloadBehaviorActivity.this, "Download complete.", Toast.LENGTH_LONG).show();
                     }
                 } catch (Exception e) {
@@ -146,7 +143,7 @@ public class DownloadBehaviorActivity extends BaseActivity implements Response.L
             }
         };
 
-        FileRequest request = new FileRequest(Request.Method.GET, mUrl,success,error,null);
+        FileRequest request = new FileRequest(Request.Method.GET, item.getDexURL(),success,error,null);
         queue.add(request);
     }
 }

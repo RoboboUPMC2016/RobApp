@@ -5,12 +5,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.view.View;
-import android.widget.Button;
 
 import com.robapp.app.activity.BehaviorActivity;
-import com.robapp.behaviors.executions.BehaviorThread;
 import com.robapp.behaviors.interfaces.BehaviorItemI;
-import com.robapp.app.task.AsyncTask;
 /**
  * Created by Arthur on 19/10/2016.
  */
@@ -23,7 +20,7 @@ public class Launcher extends ProgressDialog {
     private BehaviorItemI behavior;
     private BehaviorActivity act;
     boolean started = false;
-    BehaviorThread t;
+    Thread t;
 
     public Launcher(Context context, int timed, BehaviorItemI behavior) {
         super(context);
@@ -40,7 +37,7 @@ public class Launcher extends ProgressDialog {
 
             }
         });
-        t = new BehaviorThread(behavior);
+        t = new Thread(behavior);
     }
 
     @Override
@@ -84,7 +81,7 @@ public class Launcher extends ProgressDialog {
         return started;
     }
 
-    public BehaviorThread getThread()
+    public Thread getThread()
     {
         if(started)
             return t;

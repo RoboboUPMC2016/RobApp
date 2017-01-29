@@ -2,9 +2,6 @@ package com.robapp.behaviors.executions;
 
 import com.robapp.behaviors.listener.CmdHandler;
 import com.robapp.behaviors.interfaces.EventHandlerI;
-import com.robapp.utils.Utils;
-
-import java.util.LinkedList;
 
 import robdev.Event;
 

@@ -1,18 +1,18 @@
 package com.robapp.app.activity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
 import android.content.Intent;
 import android.widget.ListView;
-import android.widget.ViewFlipper;
 
 import com.robapp.R;
 import com.robapp.app.adapter.FileExplorerAdapter;
 import com.robapp.app.dialog.BehaviorSelectionDialog;
 import com.robapp.behaviors.interfaces.BehaviorItemI;
-import com.robapp.utils.Utils;
+import com.robapp.tools.Utils;
 
 import java.io.File;
 
@@ -34,7 +34,7 @@ public class FileExplorerActivity extends BaseActivity {
         setContentView(R.layout.activity_file_explorer);
         setupDrawer();
 
-        root = new File("/storage");
+        root = getDir("behavior_downloaded", Context.MODE_PRIVATE);//new File("/storage");
         adapter = new FileExplorerAdapter(root,this);
 
         ListView list = (ListView) findViewById(R.id.listView7);
@@ -48,7 +48,7 @@ public class FileExplorerActivity extends BaseActivity {
     {
 
         try {
-            Utils.moveBehaviorDownloaded(getApplicationContext(),f);
+            Utils.moveBehaviorImported(getApplicationContext(),f);
 
             final BehaviorSelectionDialog dialog = new BehaviorSelectionDialog();
             dialog.setListener(new BehaviorSelectionDialog.Listener() {

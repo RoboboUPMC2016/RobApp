@@ -1,8 +1,7 @@
-package com.robapp.utils;
+package com.robapp.tools;
 
 import android.util.Log;
 
-import com.robapp.app.activity.BaseActivity;
 import com.robapp.behaviors.item.BehaviorFileItem;
 
 import org.xml.sax.InputSource;

@@ -1,8 +1,7 @@
-package com.robapp.utils;
+package com.robapp.tools;
 
 import android.content.Context;
 
-import com.journeyapps.barcodescanner.Util;
 import com.robapp.behaviors.item.BehaviorFileItem;
 
 import org.xml.sax.Attributes;

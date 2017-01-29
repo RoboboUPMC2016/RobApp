@@ -7,13 +7,11 @@ import com.mytechia.robobo.framework.hri.speech.production.ISpeechProductionModu
 import com.mytechia.robobo.rob.IRob;
 import com.mytechia.robobo.rob.IRobInterfaceModule;
 import com.mytechia.robobo.rob.movement.IRobMovementModule;
-import com.robapp.app.activity.BehaviorActivity;
-import com.robapp.behaviors.executions.BehaviorThread;
 import com.robapp.behaviors.executions.ContextManager;
 import com.robapp.behaviors.exceptions.StopBehaviorException;
 import com.robapp.behaviors.listener.WaitEventHandler;
 import com.robapp.behaviors.listener.WhenEventHandler;
-import com.robapp.utils.Utils;
+import com.robapp.tools.Utils;
 
 
 import robdev.Actions;

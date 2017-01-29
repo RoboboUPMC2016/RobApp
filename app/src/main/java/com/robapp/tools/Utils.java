@@ -1,4 +1,4 @@
-package com.robapp.utils;
+package com.robapp.tools;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,7 +13,7 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.mytechia.robobo.framework.RoboboManager;
 import com.robapp.app.activity.BaseActivity;
 import com.robapp.app.activity.BehaviorActivity;
-import com.robapp.behaviors.executions.BehaviorThread;
+import com.robapp.app.adapter.ItemDownload;
 import com.robapp.behaviors.item.BehaviorFileItem;
 import com.robapp.behaviors.listener.StatusListener;
 import com.robapp.behaviors.natives.AngryRobotBehavior;
@@ -26,7 +26,6 @@ import com.robapp.behaviors.natives.MyBehavior;
 import com.robapp.behaviors.natives.SquareTripBehavior;
 import com.robapp.behaviors.interfaces.BehaviorItemI;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -37,6 +36,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -47,20 +48,23 @@ import java.util.StringTokenizer;
 
 public class Utils {
 
-    private static BaseActivity current = null;
-    private static RoboboManager roboboManager;
-    private static ArrayList<BehaviorItemI> behaviors;
-    private static File privateDir;
     private static final String xmlFileName = "robapp_behaviors_.xml";
     public  static String defaultUrl ="http://robhub.esy.es/";
+
     private static final int QRCodeSize = 400;
     private static boolean behaviorStarted = false;
-    private static BehaviorThread thread;
 
+    private static File downloadedDir;
+    private static File importedDir;
+
+    private static BaseActivity current = null;
+    private static RoboboManager roboboManager;
+
+    private static ArrayList<BehaviorItemI> behaviors;
     private static StatusListener statusListener;
 
-    public static void init(Context context)
-    {
+
+    public static void init(Context context) throws IOException {
         if(behaviors == null)
             behaviors = new ArrayList<BehaviorItemI>();
         else
@@ -75,9 +79,15 @@ public class Utils {
         behaviors.add(new NativeBehaviorItem("Angry", new AngryRobotBehavior()));
 
 
-        privateDir = context.getDir("behavior_downloaded",Context.MODE_PRIVATE);
+        downloadedDir = context.getDir("behavior_downloaded",Context.MODE_PRIVATE);
+        if(!downloadedDir.exists())
+            downloadedDir.mkdir();
 
-        File xmlFile = new File(privateDir.getAbsoluteFile()+ File.separator+xmlFileName);
+        importedDir = new File(downloadedDir.getAbsolutePath()+File.separator+"imported");
+        if(!importedDir.exists())
+            importedDir.mkdir();
+
+        File xmlFile = new File(downloadedDir.getAbsoluteFile()+ File.separator+xmlFileName);
         System.out.println("Downloaded Behavior ==> "+xmlFile.getAbsolutePath());
 
 
@@ -136,10 +146,10 @@ public class Utils {
         }
     }
 
-    static public void saveDownloadFile(JSONObject obj,byte [] data) throws Exception {
+    static public void saveDownloadFile(ItemDownload itemD, byte [] data) throws Exception {
 
-        String fileName = obj.getString("filename");
-        File dir = new File(privateDir.getAbsolutePath()+File.separator+obj.getString("id"));
+        String fileName = itemD.getFileName();
+        File dir = new File(downloadedDir.getAbsolutePath()+File.separator+itemD.getId());
 
         try{
             if(dir.exists())
@@ -152,22 +162,22 @@ public class Utils {
 
         dir.mkdir();
 
-        File f = new File(privateDir.getAbsolutePath()+File.separator+obj.getString("id")+File.separator+fileName);
+        File f = new File(downloadedDir.getAbsolutePath()+File.separator+itemD.getId()+File.separator+fileName);
         f.createNewFile();
         writeDataToFile(data,f);
 
 
         BehaviorFileItem item = new BehaviorFileItem();
-        item.setUrl(obj.getString("behaviordetails_url"));
-        item.setName(obj.getString("label"));
+        item.setUrl(itemD.getDetailsURL());
+        item.setName(itemD.getLabel());
 
 
         item.setFile(f);
-        item.setId(Integer.parseInt(obj.getString("id")));
+        item.setId(Integer.parseInt(itemD.getId()));
 
         behaviors.add(item);
 
-        File xmlFile = new File(privateDir.getAbsoluteFile()+ File.separator+xmlFileName);
+        File xmlFile = new File(downloadedDir.getAbsoluteFile()+ File.separator+xmlFileName);
 
         if(xmlFile.exists())
             xmlFile.delete();
@@ -184,8 +194,9 @@ public class Utils {
         File newF = new File(dir.getAbsolutePath()+"/"+ f.getName());
         if(newF.exists())
             newF.delete();
-        newF.createNewFile();
         System.out.println("New File : "+newF.getAbsolutePath());
+        newF.createNewFile();
+
         FileChannel in = new FileInputStream(f).getChannel();
         FileChannel out = new FileOutputStream(newF).getChannel();
 
@@ -194,25 +205,32 @@ public class Utils {
         return newF;
     }
 
-    static public boolean moveBehaviorDownloaded(Context context,File f)
+    static public boolean moveBehaviorImported(Context context, File f)
     {
 
-        File dir = context.getDir("behavior_downloaded",Context.MODE_PRIVATE);
 
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyymmddhhmmss");
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        String dirName = dateFormat.format(timestamp);
+        System.out.println("dirName : "+dirName);
+        File dir = new File(importedDir.getAbsolutePath()+File.separator+dirName);
+        if(!dir.exists())
+            dir.mkdir();
+        System.out.println("dirName : "+dir.getAbsolutePath());
         try {
 
             File newF = moveFileToDir(f, dir);
-            StringTokenizer tok = new StringTokenizer(newF.getName(),".");
 
+            StringTokenizer tok = new StringTokenizer(newF.getName(),".");
             BehaviorFileItem item = new BehaviorFileItem();
+
             item.setUrl(defaultUrl);
             item.setName(tok.nextToken());
             item.setFile(newF);
 
             behaviors.add(item);
 
-            File xmlFile = new File(privateDir.getAbsoluteFile()+ File.separator+xmlFileName);
-
+            File xmlFile = new File(downloadedDir.getAbsoluteFile()+ File.separator+xmlFileName);
             if(xmlFile.exists())
                 xmlFile.delete();
 
@@ -225,8 +243,25 @@ public class Utils {
             System.err.println("Error : behavior not moved");
             e.printStackTrace();
         }
-
         return false;
+    }
+
+    static public  void removeBehavior(BehaviorFileItem item)
+    {
+        behaviors.remove(item);
+        File parent = item.getFile().getParentFile();
+        item.getFile().delete();
+        parent.delete();
+
+        File xmlFile = new File(downloadedDir.getAbsoluteFile()+ File.separator+xmlFileName);
+        if(xmlFile.exists())
+            xmlFile.delete();
+
+        try {
+            createXMLFile(xmlFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -314,13 +349,5 @@ public class Utils {
 
     public static void setStatusListener(StatusListener statusListener) {
         Utils.statusListener = statusListener;
-    }
-
-    public static BehaviorThread getThread() {
-        return thread;
-    }
-
-    public static void setThread(BehaviorThread thread) {
-        Utils.thread = thread;
     }
 }

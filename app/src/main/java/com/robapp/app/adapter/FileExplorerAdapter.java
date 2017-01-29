@@ -41,7 +41,7 @@ public class FileExplorerAdapter extends BaseAdapter {
         files.add(this.dir);
 
 
-        files.addAll(FileExplorerAdapter.filter(dir,"all"));
+        files.addAll(FileExplorerAdapter.filter(dir,"dex"));
     }
 
     @Override
@@ -101,12 +101,23 @@ public class FileExplorerAdapter extends BaseAdapter {
         {
 
             text.setText(f.getName());
+            vi.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+            vi.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    return false;
+                }
+            });
 
             if(f.isFile())
                 vi.setOnLongClickListener(new FileExplorerLongListener(this, f,act));
             else
                 vi.setOnClickListener(new FileExplorerListener(this, f));
-
 
         }
 
