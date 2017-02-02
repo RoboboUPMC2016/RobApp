@@ -27,17 +27,17 @@ public class ContextManager {
      */
     public static void executeInNewContext(final Runnable run)
     {
-        Handler handler = new Handler();
+     /*   Handler handler = new Handler();
         handler.post(new Runnable() {
             @Override
-            public void run() {
+            public void run() {*/
                 System.out.println("Handler Started");
                 context.createChildContext();
                 run.run();
                 context.removeChildContext();
                 System.out.println("Handler Finished");
-            }
-        });
+           /* }
+        });*/
 
 
     }

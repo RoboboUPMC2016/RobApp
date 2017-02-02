@@ -2,7 +2,7 @@ package com.robapp.behaviors.natives;
 
 import robdev.*;
 
-public class BeahviorTestReactive3 implements Behavior {
+public class BehaviorTestReactive3 implements Behavior {
 
    private int cpt;
 

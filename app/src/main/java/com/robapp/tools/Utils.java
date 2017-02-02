@@ -17,6 +17,7 @@ import com.robapp.behaviors.item.ItemDownload;
 import com.robapp.behaviors.item.BehaviorFileItem;
 import com.robapp.behaviors.listener.StatusListener;
 import com.robapp.behaviors.natives.AngryRobotBehavior;
+import com.robapp.behaviors.natives.BehaviorTestReactive3;
 import com.robapp.behaviors.natives.DummyBehavior;
 import com.robapp.behaviors.item.NativeBehaviorItem;
 import com.robapp.behaviors.natives.InfiniteRoundBehavior;
@@ -73,12 +74,7 @@ public class Utils {
         else
             behaviors.clear();
         //Native behaviors
-        behaviors.add(new NativeBehaviorItem("Dummy Behavior Native",new DummyBehavior()));
-        behaviors.add(new NativeBehaviorItem("Round Trip",new RoundTripBehavior()));
-        behaviors.add(new NativeBehaviorItem("Square Trip",new SquareTripBehavior()));
-        behaviors.add(new NativeBehaviorItem("Infinite Shock Behavior",new InfiniteRoundBehavior()));
-        behaviors.add(new NativeBehaviorItem("Reactive Behavior",new ReactiveBehavior()));
-        behaviors.add(new NativeBehaviorItem("Angry", new AngryRobotBehavior()));
+        behaviors.add(new NativeBehaviorItem("Test Behavior", new BehaviorTestReactive3()));
 
         //Init dir
         downloadedDir = context.getDir("behavior_downloaded",Context.MODE_PRIVATE);

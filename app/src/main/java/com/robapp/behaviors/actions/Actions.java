@@ -210,7 +210,7 @@ public class Actions implements robdev.Actions {
         ContextManager.lockAction();
         try {
                 moveModule.turnLeftAngle(VELOCITY, (int) (90 * 4.89));
-            ContextManager.unlockAction();
+                ContextManager.unlockAction();
                 waitCommandEnd();
         } catch (InternalErrorException e) {
             e.printStackTrace();
@@ -257,12 +257,14 @@ public class Actions implements robdev.Actions {
      */
     public void waitCommandEnd()
     {
+        System.out.println("Wait cmd");
         //Set a flag in order to informe that we wait a end command
         ContextManager.getCMDHandler().setWaiting(true);
         //Wait the command end
         ContextManager.getCMDHandler().waitEndCmd();
         //Remove the flag
         ContextManager.getCMDHandler().setWaiting(false);
+        System.out.println("End Wait cmd");
     }
 
     /**

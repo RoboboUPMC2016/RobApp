@@ -128,12 +128,12 @@ public class ExecutionContext {
      * Else it will use the CMDHandler of the current context to handle the command end
      */
     public void  notifyEndCommand()
-  {
+    {
         if(child != null)
             child.notifyEndCommand();
         else if(cmdHandler.IsWaiting())
             cmdHandler.notifyEndCmd();
-  }
+    }
 
 
     /**
@@ -179,7 +179,6 @@ public class ExecutionContext {
     {
         currentThread = Thread.currentThread();
     }
-
     /**
      * If the inner context is not null it will call the method of the inner context then it interrupts
      * the execution of the thread associated to the current execution context

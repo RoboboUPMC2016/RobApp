@@ -11,18 +11,25 @@ import com.robapp.behaviors.interfaces.CmdHandlerI;
 public class CmdHandler implements CmdHandlerI {
 
     private boolean waiting;
+    private boolean arrived;
 
     public CmdHandler()
     {
         this.waiting = false;
+        this.arrived = false;
     }
 
     @Override
     public void waitEndCmd() {
         synchronized (this)
         {
+
             try {
-                this.wait();
+                if(!arrived)
+                {
+                    this.wait();
+                }
+                arrived = false;
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 throw new StopBehaviorException("Behaviour Interrupted");
@@ -34,6 +41,8 @@ public class CmdHandler implements CmdHandlerI {
     public void notifyEndCmd() {
         synchronized (this)
         {
+            this.arrived = true;
+            System.out.println("notify end cmd");
             this.notify();
         }
     }

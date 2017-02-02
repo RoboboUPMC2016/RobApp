@@ -157,8 +157,8 @@ public class BehaviorActivity extends BaseActivity implements IEmotionListener, 
                     Utils.setBehaviorStarted(true);
                     updateStartButtonText(true);
                     Utils.getRoboboManager().getModuleInstance(IEmotionModule.class).subscribe(this);
-
-                   handler.post(thread);
+                    thread.start();
+                  // handler.post(thread);
 
                 }
             }
@@ -175,6 +175,7 @@ public class BehaviorActivity extends BaseActivity implements IEmotionListener, 
      */
     public void stopBehavior(){
         if(Utils.isBehaviorStarted()) {
+
             ContextManager.stopExecution();
             Utils.setBehaviorStarted(false);
             try {
