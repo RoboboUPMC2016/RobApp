@@ -9,5 +9,6 @@
     <string name="drawer_open">RobApp Menu</string>
     <string name="drawer_close">RobApp</string>
     <string name="option">RobApp</string>
+    <string name="SelectBehavior">Behavior Selection</string>
 
 </resources>

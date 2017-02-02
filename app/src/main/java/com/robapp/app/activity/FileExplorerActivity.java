@@ -17,7 +17,9 @@ import com.robapp.tools.Utils;
 import java.io.File;
 
 
-
+/**
+ * An activity for exploring the android file system
+ */
 
 public class FileExplorerActivity extends BaseActivity {
 
@@ -44,6 +46,10 @@ public class FileExplorerActivity extends BaseActivity {
     }
 
 
+    /**
+     * Importe a file in the application private dir
+     * @param f The selected file
+     */
     public void fileChoosen(File f)
     {
 
@@ -74,6 +80,10 @@ public class FileExplorerActivity extends BaseActivity {
 
     }
 
+    /**
+     * Show an error box dialog
+     * @param msg Message to display
+     */
     public void showChooseFileError(String msg)
     {
         AlertDialog alertDialog = new AlertDialog.Builder(FileExplorerActivity.this).create();
@@ -89,6 +99,9 @@ public class FileExplorerActivity extends BaseActivity {
         alertDialog.show();
     }
 
+    /**
+     * Launch the BehaviorActivity
+     */
     public void goBack()
     {
         this.startActivity(intent);

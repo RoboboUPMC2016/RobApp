@@ -1,11 +1,7 @@
 package com.robapp.app.activity;
 
-import android.content.ClipData;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -18,7 +14,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.robapp.R;
 import com.robapp.app.adapter.BehaviorDownloadAdapter;
-import com.robapp.app.adapter.ItemDownload;
+import com.robapp.behaviors.item.ItemDownload;
 import com.robapp.tools.FileRequest;
 import com.robapp.tools.Utils;
 
@@ -27,8 +23,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
+/**
+ * The activity for downloading behaviors from RobHub
+ */
 public class DownloadBehaviorActivity extends BaseActivity implements Response.Listener<JSONObject>,Response.ErrorListener {
 
     private static final String url = "http://robhub.esy.es/api/getbehaviors.php";
@@ -51,6 +49,7 @@ public class DownloadBehaviorActivity extends BaseActivity implements Response.L
         myList.setAdapter(adapter);
         search = (SearchView)findViewById(R.id.searchView);
 
+
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -70,6 +69,10 @@ public class DownloadBehaviorActivity extends BaseActivity implements Response.L
         queue.add(request);
     }
 
+    /**
+     * Methods called when the http request has ended
+     * @param response
+     */
     @Override
     public void onResponse(JSONObject response) {
         try {
@@ -106,6 +109,10 @@ public class DownloadBehaviorActivity extends BaseActivity implements Response.L
 
     }
 
+    /**
+     * Method called if during the http request an error occures
+     * @param error
+     */
     @Override
     public void onErrorResponse(VolleyError error) {
         System.out.println("Error : "+error.getMessage() );
@@ -113,6 +120,11 @@ public class DownloadBehaviorActivity extends BaseActivity implements Response.L
     }
 
 
+    /**
+     * Download a behavior
+     * @param item The item representing the behavior
+     * @throws Exception
+     */
     public void downloadFile(final ItemDownload item) throws Exception {
 
 

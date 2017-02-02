@@ -10,7 +10,9 @@ import com.robapp.behaviors.interfaces.BehaviorItemI;
 import com.robapp.behaviors.item.BehaviorFileItem;
 import com.robapp.tools.Utils;
 
-
+/**
+ * The activity for displaying the behaviorQRCode
+ */
 public class QRCodeActivity extends BaseActivity {
 
     @Override
@@ -27,8 +29,12 @@ public class QRCodeActivity extends BaseActivity {
 
             if(selectedBehavior != null)
             {
+                //If the behavior is present in the social network
+                //generate the QRCode for reaching the behavior details page
                 if(selectedBehavior instanceof BehaviorFileItem)
                     Utils.generateQRCode(((BehaviorFileItem) selectedBehavior).getUrl(),img);
+                else // Else generate a default QRCode for reaching the social network homepage
+                    Utils.generateQRCode(Utils.defaultUrl,img);
             }
             else
             {

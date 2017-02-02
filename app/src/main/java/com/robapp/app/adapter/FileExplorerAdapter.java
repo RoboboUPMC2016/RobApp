@@ -17,7 +17,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-
+/**
+ * FIle Explorer adapter
+ */
 public class FileExplorerAdapter extends BaseAdapter {
 
     private ArrayList<File> files;

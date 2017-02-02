@@ -9,6 +9,7 @@ import android.view.View;
 import com.robapp.app.activity.BehaviorActivity;
 import com.robapp.behaviors.interfaces.BehaviorItemI;
 /**
+ * A dialog to launch a behavior
  * Created by Arthur on 19/10/2016.
  */
 
@@ -51,7 +52,10 @@ public class Launcher extends ProgressDialog {
                 timed--;
                 update();
                 if(timed == 0)
+                {
+                    started = true;
                     dismiss();
+                }
                 else
                     handler.postDelayed(this,1000);
             }
@@ -76,11 +80,19 @@ public class Launcher extends ProgressDialog {
         }
     }
 
+    /**
+     * Know if the user cancel the behavior
+     * @return False is the user cancel the action otherwise true
+     */
     public boolean launchConfirmed()
     {
         return started;
     }
 
+    /**
+     * Get the Thread which contains the behavior
+     * @return The Thread
+     */
     public Thread getThread()
     {
         if(started)

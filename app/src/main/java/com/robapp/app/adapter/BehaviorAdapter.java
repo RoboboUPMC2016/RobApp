@@ -73,11 +73,19 @@ public class BehaviorAdapter extends BaseAdapter {
         return convertView;
     }
 
+    /**
+     * Get the selected item
+     * @return The selected item
+     */
     public BehaviorItemI getSelectedItem()
     {
         return selectedItem;
     }
 
+    /**
+     * Set the selected item
+     * @param i The item id
+     */
     public void setSelectedItem(int i)
     {
         selectedItem = getItem(i);

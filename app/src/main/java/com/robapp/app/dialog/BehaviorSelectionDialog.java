@@ -12,9 +12,9 @@ import com.robapp.tools.Utils;
 
 import java.util.ArrayList;
 
-/** A pop-up dialog that asks the user to select a particular Robobo bluetooth device
- *
- * @author Gervasio Varela
+/**
+ * A pop-up dialog that asks the user to select a particular behavior
+ * Based on the RobDeviceSelectionDialog from the Robobo project
  */
 public class BehaviorSelectionDialog extends DialogFragment {
 
@@ -32,7 +32,7 @@ public class BehaviorSelectionDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
 
-            builder.setTitle(R.string.BluetoothDeviceSelectionTitle)
+            builder.setTitle(R.string.SelectBehavior)
                     .setItems(behaviorName, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
 
@@ -60,11 +60,6 @@ public class BehaviorSelectionDialog extends DialogFragment {
         this.listener = null;
     }
 
-
-    /** Receives notifications of the selection of a Robobo bluetooth device
-     * from the selection dialog.
-     *
-     */
     public interface Listener {
 
         public void behaviorSelected(BehaviorItemI item);

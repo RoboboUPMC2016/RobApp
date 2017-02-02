@@ -9,7 +9,9 @@ import dalvik.system.DexClassLoader;
 import dalvik.system.PathClassLoader;
 import robdev.Behavior;
 
-
+/**
+ * The behavior class loader, used for loading a behavior class
+ */
 public final class BehaviorClassLoader extends PathClassLoader {
 
     private BehaviorClassLoader (final String dexPath){

@@ -9,7 +9,7 @@ import com.robapp.app.adapter.FileExplorerAdapter;
 import java.io.File;
 
 /**
- * Created by Arthur on 15/10/2016.
+ * On long click for item in the FIleExplorerActivity
  */
 
 public class FileExplorerLongListener implements View.OnLongClickListener {

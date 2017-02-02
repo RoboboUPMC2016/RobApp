@@ -5,18 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.robapp.R;
 import com.robapp.app.activity.DownloadBehaviorActivity;
-import com.robapp.app.activity.FileExplorerActivity;
-import com.robapp.behaviors.interfaces.BehaviorItemI;
-import com.robapp.behaviors.item.NativeBehaviorItem;
-
-import org.apache.commons.codec.language.DoubleMetaphone;
+import com.robapp.behaviors.item.ItemDownload;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -114,6 +108,12 @@ public class BehaviorDownloadAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    /**
+     * Check if ther is a matching between the item label and description and another string
+     * @param item The item
+     * @param text The string which is searched
+     * @return
+     */
     private boolean stringMatch(ItemDownload item,String text)
     {
         String textUpper = text.toUpperCase();

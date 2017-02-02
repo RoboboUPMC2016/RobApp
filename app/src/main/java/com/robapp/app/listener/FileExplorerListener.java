@@ -6,7 +6,7 @@ import java.io.File;
 
 
 /**
- * Created by Arthur on 17/07/2015.
+ * OnClick listener for items of the file explorer activity
  */
 public class FileExplorerListener implements View.OnClickListener {
 

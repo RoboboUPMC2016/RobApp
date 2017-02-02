@@ -18,6 +18,9 @@ import com.robapp.app.dialog.Launcher;
 import com.robapp.behaviors.executions.ContextManager;
 import com.robapp.tools.Utils;
 
+/**
+ * The activity for launching a behavior
+ */
 public class BehaviorActivity extends BaseActivity implements IEmotionListener, DialogInterface.OnDismissListener {
 
     Button startButton;
@@ -37,20 +40,23 @@ public class BehaviorActivity extends BaseActivity implements IEmotionListener, 
             @Override
             public void onClick(View v) {
 
-
+                //If no robobo are connected
                 if(!robStarted)
                 {
+                    //connect the robobo
                     showRoboboDeviceSelectionDialog();
                     return;
                 }
 
+                //If no behaviors are running
                 if(!Utils.isBehaviorStarted())
                 {
+                    //Start the behavior
                     launcher = new Launcher(BehaviorActivity.this,5,selectedBehavior);
                     launcher.setOnDismissListener(BehaviorActivity.this);
                     launcher.show();
                 }
-                else
+                else // else stop the behavior
                     stopBehavior();
 
 
@@ -74,6 +80,10 @@ public class BehaviorActivity extends BaseActivity implements IEmotionListener, 
     }
 
 
+    /**
+     * Set a new emotion
+     * @param emotion The new emotion
+     */
     @Override
     public void newEmotion(final Emotion emotion) {
 
@@ -110,20 +120,25 @@ public class BehaviorActivity extends BaseActivity implements IEmotionListener, 
         super.onDestroy();
     }
 
+    /**
+     * Update the button text
+     * if start is true the button text is "Start" else "Stop"
+     * @param start
+     */
     public void updateStartButtonText(final boolean start)
     {
         if(!start)
             startButton.post(new Runnable() {
                 @Override
                 public void run() {
-                    startButton.setText("Lancer");
+                    startButton.setText("Start");
                 }
             });
         else
             startButton.post(new Runnable() {
                 @Override
                 public void run() {
-                    startButton.setText("Stopper");
+                    startButton.setText("Stop");
                 }
             });
     }
@@ -134,6 +149,7 @@ public class BehaviorActivity extends BaseActivity implements IEmotionListener, 
         {
             try{
 
+                //Launch the behavior
                 Thread thread = launcher.getThread();
                 if(thread != null)
                 {
@@ -142,7 +158,7 @@ public class BehaviorActivity extends BaseActivity implements IEmotionListener, 
                     updateStartButtonText(true);
                     Utils.getRoboboManager().getModuleInstance(IEmotionModule.class).subscribe(this);
 
-                    thread.start();
+                   handler.post(thread);
 
                 }
             }
@@ -154,6 +170,9 @@ public class BehaviorActivity extends BaseActivity implements IEmotionListener, 
         }
     }
 
+    /**
+     * Stop the behavior execution
+     */
     public void stopBehavior(){
         if(Utils.isBehaviorStarted()) {
             ContextManager.stopExecution();

@@ -1,12 +1,13 @@
 package com.robapp.behaviors.executions;
 
 import com.robapp.behaviors.listener.CmdHandler;
-import com.robapp.behaviors.interfaces.EventHandlerI;
+import com.robapp.behaviors.interfaces.EventListenerI;
 import com.robapp.behaviors.listener.HandlerListener;
 
 import robdev.Event;
 
 /**
+ * This the class which implements the execution context
  * Created by Arthur on 09/12/2016.
  */
 
@@ -19,6 +20,9 @@ public class ExecutionContext {
     private HandlerListener handlerListener;
     private Thread currentThread;
 
+    /**
+     * The constructor
+     */
     public ExecutionContext() {
 
         this.child = null;
@@ -29,6 +33,12 @@ public class ExecutionContext {
         this.currentThread = null;
     }
 
+    /**
+     * Notify and event
+     * The Execution constext will give the event to its ExecutionContext child if it is not null
+     * Else it will use is own dispatcher to manage the event
+     * @param e The event to dispatch
+     */
     public void notifyEvent(Event e){
         if(child != null)
         {
@@ -38,6 +48,9 @@ public class ExecutionContext {
         dispatcher.dispatchEvent(e);
     }
 
+    /**
+     * Create an inner ExecutionContext
+     */
     protected void createChildContext()
     {
         if(child == null)
@@ -49,6 +62,9 @@ public class ExecutionContext {
             child.createChildContext();
     }
 
+    /**
+     * Remove the inner ExecutionContext
+     */
     protected void removeChildContext()
     {
         if(child.child == null)
@@ -64,24 +80,41 @@ public class ExecutionContext {
             child.removeChildContext();
     }
 
-    protected void addEventHandler(EventHandlerI handler)
+    /**
+     *  Add an event listener
+     *  If the inner context is not null it will call the method of the inner context.
+     *  Else the listener is added to the dispatcher of the current object
+     * @param listener The listener to add
+     */
+    protected void addEventListener(EventListenerI listener)
     {
         if(currentThread == Thread.currentThread())
-            dispatcher.addEventHandler(handler);
+            dispatcher.addEventListener(listener);
         else
-            child.addEventHandler(handler);
+            child.addEventListener(listener);
     }
 
-    protected void removeEventHandler(EventHandlerI handler)
+    /**
+     * Remove an event listener
+     * If the inner context is not null it will call the method of the inner context.
+     *  Else the listener is removed of the dispatcher of the current object
+     * @param listener
+     */
+    protected void removeEventListener(EventListenerI listener)
     {
         if(currentThread == Thread.currentThread())
-            dispatcher.removeEventHandler(handler);
+            dispatcher.removeEventListener(listener);
         else
-            child.removeEventHandler(handler);
+            child.removeEventListener(listener);
 
     }
 
 
+    /**
+     * If the inner context is not null the method of the inner context will be called
+     * Else it return the CMDHandler of the current ExecutionContext
+     * @return The CMDHandler
+     */
     protected CmdHandler getCMDHandler()
     {
         if(currentThread == Thread.currentThread())
@@ -90,22 +123,22 @@ public class ExecutionContext {
             return child.getCMDHandler();
     }
 
+    /**
+     * IF the inner context is not null it will call the method of the inner context
+     * Else it will use the CMDHandler of the current context to handle the command end
+     */
     public void  notifyEndCommand()
   {
         if(child != null)
             child.notifyEndCommand();
         else if(cmdHandler.IsWaiting())
-            cmdHandler.handleEndCmd();
+            cmdHandler.notifyEndCmd();
   }
 
-    private boolean isHandlerRunning()
-    {
-        if(child != null)
-            return child.isHandlerRunning();
 
-        return handlerRunning;
-    }
-
+    /**
+     * Wait the end of an event handler
+     */
     public void waitEventHandlerEnd()
     {
         if(child != null)
@@ -125,6 +158,10 @@ public class ExecutionContext {
         }
     }
 
+    /**
+     * Set if an handler is running
+     * @param handlerRunning
+     */
     protected void setIsHandlerRunning(boolean handlerRunning)
     {
         if(handlerRunning)
@@ -135,11 +172,18 @@ public class ExecutionContext {
         this.handlerRunning = handlerRunning;
     }
 
+    /**
+     * Record the thread which is associated to the current ExecutionCOntext
+     */
     protected void initCurrentThread()
     {
         currentThread = Thread.currentThread();
     }
 
+    /**
+     * If the inner context is not null it will call the method of the inner context then it interrupts
+     * the execution of the thread associated to the current execution context
+     */
     protected void stopExecution()
     {
         if(child != null)

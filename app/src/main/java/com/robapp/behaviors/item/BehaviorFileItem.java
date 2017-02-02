@@ -1,8 +1,10 @@
 package com.robapp.behaviors.item;
 
+import android.widget.Toast;
+
 import com.mytechia.robobo.rob.IRobInterfaceModule;
 import com.mytechia.robobo.rob.movement.IRobMovementModule;
-import com.robapp.behaviors.actions.Acts;
+import com.robapp.behaviors.actions.Actions;
 import com.robapp.behaviors.executions.ContextManager;
 import com.robapp.behaviors.loader.BehaviorClassLoader;
 import com.robapp.behaviors.interfaces.BehaviorItemI;
@@ -14,6 +16,8 @@ import java.util.StringTokenizer;
 import robdev.Behavior;
 
 /**
+ * The implementation of BehaviotItemI.
+ * It implement a behavior.
  * Created by Arthur on 19/10/2016.
  */
 
@@ -24,6 +28,9 @@ public class BehaviorFileItem implements BehaviorItemI
     private String url;
     private int id;
 
+    /**
+     * Constructor
+     */
     public BehaviorFileItem()
     {
        file = null;
@@ -32,6 +39,11 @@ public class BehaviorFileItem implements BehaviorItemI
         id =-1;
     }
 
+    /**
+     * Constructor
+     * @param f The file which contains the behavior code
+     * @param id The behavior id
+     */
     public BehaviorFileItem(File f,int id)
     {
         this.file =f;
@@ -41,6 +53,12 @@ public class BehaviorFileItem implements BehaviorItemI
         this.id=id;
     }
 
+    /**
+     * Constructor
+     * @param f The file which contains the behavior code
+     * @param name The behavior name
+     * @param id The behavior id
+     */
     public BehaviorFileItem(File f,String name,int id)
     {
         this.file = f;
@@ -49,10 +67,18 @@ public class BehaviorFileItem implements BehaviorItemI
         this.id=id;
     }
 
+    /**
+     * Get the behavior file
+     * @return The behavior file
+     */
     public File getFile() {
         return file;
     }
 
+    /**
+     * Set behavior file
+     * @param file
+     */
     public void setFile(File file) {
         this.file = file;
     }
@@ -62,26 +88,46 @@ public class BehaviorFileItem implements BehaviorItemI
         return name;
     }
 
+    /**
+     * Set the behavior name
+     * @param name
+     */
     public void setName(String name)
     {
         this.name = name;
     }
 
+    /**
+     * Set the behavior URL
+     * @param url
+     */
     public void setUrl(String url)
     {
         this.url = url;
     }
 
+    /**
+     * Get the the behavior URL
+     * @return the behavior URL
+     */
     public String getUrl()
     {
         return url;
     }
 
+    /**
+     * Get the behavior ID
+     * @return the behavior ID
+     */
     public int getId()
     {
         return id;
     }
 
+    /**
+     * Set the behavior ID
+     * @param id The behavior ID
+     */
     public void setId(int id)
     {
         this.id = id;
@@ -91,34 +137,34 @@ public class BehaviorFileItem implements BehaviorItemI
     public void run() {
 
         boolean status = false;
-        Acts act = null;
+        Actions act = null;
         try{
+            //We load dynamically the class
             String filename = file.getName();
             int ind = filename.indexOf(".");
             String className = filename.substring(0,ind);
-            System.out.println("Classe Name : "+className);
-            System.out.println("File exists : "+file.exists());
-            System.out.println("File can read : "+file.canRead());
-            System.out.println("File can execute : "+file.canExecute());
 
-            System.out.println("File can write : "+file.canWrite());
             Class<?> myClass =  BehaviorClassLoader.getClassFromDexFile(Utils.getCurrentActivity().getApplicationContext(),file.getAbsolutePath(),className);
-            Object obj =  myClass.newInstance();
+            Behavior behavior = (Behavior) myClass.newInstance();
 
-            if(obj instanceof Behavior)
+            //Useless test because if behavior is not an isntance of Behavior
+            //The previous line throws an Exception but just in case we let the test
+            if(behavior instanceof Behavior)
             {
-                Behavior behavior = (Behavior) myClass.newInstance();
+                //Change the operation mode for stopping errors (Communication Problems - Robobo)
                 IRobMovementModule module = Utils.getRoboboManager().getModuleInstance(IRobMovementModule.class);
                 IRobInterfaceModule rob =  Utils.getRoboboManager().getModuleInstance(IRobInterfaceModule.class);
                 rob.getRobInterface().setOperationMode((byte)1);
+                //Init the ExecutionContext
                 ContextManager.initContext();
-                act = new Acts(module);
+                act = new Actions(module);
+                //Start the behavior
                 behavior.run(act);
             }
         }
         catch(Exception e){
             e.printStackTrace();
-            //Toast.makeText(Utils.getCurrentActivity().getApplicationContext(),"Error : "+e.getMessage(),Toast.LENGTH_SHORT);
+            Toast.makeText(Utils.getCurrentActivity().getApplicationContext(),"Error : "+e.getMessage(),Toast.LENGTH_SHORT);
         }
         finally{
             Utils.setBehaviorStarted(false);

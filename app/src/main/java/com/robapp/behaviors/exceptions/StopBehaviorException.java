@@ -1,6 +1,7 @@
 package com.robapp.behaviors.exceptions;
 
 /**
+ * A RuntimeException for stopping behavior execution
  * Created by Arthur on 25/11/2016.
  */
 

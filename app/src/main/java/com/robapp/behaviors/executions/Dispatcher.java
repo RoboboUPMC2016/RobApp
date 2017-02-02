@@ -1,44 +1,58 @@
 package com.robapp.behaviors.executions;
 
-import com.robapp.behaviors.interfaces.EventHandlerI;
+import com.robapp.behaviors.interfaces.EventListenerI;
 
 import java.util.LinkedList;
 
 import robdev.Event;
 
 /**
+ * The class which used for dispatching event to handler
  * Created by Arthur on 09/12/2016.
  */
 
 public class Dispatcher {
 
-    private LinkedList<EventHandlerI> handlers;
+    private LinkedList<EventListenerI> listeners;
+
 
     public Dispatcher() {
-        handlers = new LinkedList<EventHandlerI>();
+        listeners = new LinkedList<EventListenerI>();
     }
 
-    public void addEventHandler(EventHandlerI handler) {
-        synchronized (handlers)
+    /**
+     * Add an EventListener
+     * @param listener The EventListener to add
+     */
+    public void addEventListener(EventListenerI listener) {
+        synchronized (listeners)
         {
-            handlers.addFirst(handler);
+            listeners.addFirst(listener);
         }
     }
 
-    public void removeEventHandler(EventHandlerI handler) {
-        synchronized (handlers)
+    /**
+     * Remove an EventListener
+     * @param listener The EventListener to remove
+     */
+    public void removeEventListener(EventListenerI listener) {
+        synchronized (listeners)
         {
-            handlers.remove(handler);
+            listeners.remove(listener);
         }
     }
 
+    /**
+     * Dispatch an event to listener
+     * @param e The Event to dispatch
+     */
     public void dispatchEvent(Event e)
     {
-        synchronized (handlers)
+        synchronized (listeners)
         {
-            for(EventHandlerI handler : handlers)
+            for(EventListenerI handler : listeners)
             {
-                if(handler.handleEvent(e))
+                if(handler.notifyEvent(e))
                     return;
             }
         }

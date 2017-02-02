@@ -4,6 +4,7 @@ import com.robapp.behaviors.exceptions.StopBehaviorException;
 import com.robapp.behaviors.interfaces.CmdHandlerI;
 
 /**
+ * The implementation aof the CMDHandlerI interface
  * Created by Arthur on 12/12/2016.
  */
 
@@ -30,7 +31,7 @@ public class CmdHandler implements CmdHandlerI {
     }
 
     @Override
-    public void handleEndCmd() {
+    public void notifyEndCmd() {
         synchronized (this)
         {
             this.notify();
@@ -42,6 +43,10 @@ public class CmdHandler implements CmdHandlerI {
         return waiting;
     }
 
+    /**
+     * Set the flag which indicate  if a thrad is waiting
+     * @param waiting
+     */
     public void setWaiting(boolean waiting)
     {
         this.waiting = waiting;

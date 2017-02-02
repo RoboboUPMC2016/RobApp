@@ -14,6 +14,7 @@ import com.robapp.R;
 import java.util.Set;
 
 /** A pop-up dialog that asks the user to select a particular Robobo bluetooth device
+ * !!  Class from the Robobo Project !!
  *
  * @author Gervasio Varela
  */

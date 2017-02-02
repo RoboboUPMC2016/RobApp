@@ -16,6 +16,8 @@ import com.robapp.tools.Utils;
 import robdev.Event;
 
 /**
+ * AN implementation of RoboboServiceHelper.Listener
+ * Used for linked ExcutinManger to modules for dispatching events.
  * Created by Arthur on 03/11/2016.
  */
 
@@ -31,6 +33,7 @@ public class RobHelperListener implements RoboboServiceHelper.Listener
 
         try{
 
+            //Link the ShockModule
             IShockDetectionModule shockMod = (IShockDetectionModule) roboboManager.getModuleInstance(IShockDetectionModule.class);
             shockMod.subscribe(new IShockDetectionListener() {
                 @Override

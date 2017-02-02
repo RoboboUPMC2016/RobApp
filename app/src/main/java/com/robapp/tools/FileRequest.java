@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * A request for downloading a file using HTTP protocol.
  * Created by Arthur on 18/01/2017.
  */
 
@@ -19,6 +20,14 @@ public class FileRequest  extends Request<byte[]> {
     //create a static map for directly accessing headers
     public Map<String, String> responseHeaders ;
 
+    /**
+     * Constructor
+     * @param method  GET
+     * @param mUrl File Urle
+     * @param listener Succes Listener
+     * @param errorListener Error Listener
+     * @param params some params
+     */
     public FileRequest (int method, String mUrl ,Response.Listener<byte[]> listener,
                                     Response.ErrorListener errorListener, HashMap<String, String> params) {
 
