@@ -36,7 +36,7 @@ public class FileExplorerActivity extends BaseActivity {
         setContentView(R.layout.activity_file_explorer);
         setupDrawer();
 
-        root = getDir("behavior_downloaded", Context.MODE_PRIVATE);//new File("/storage");
+        root = new File("/storage");
         adapter = new FileExplorerAdapter(root,this);
 
         ListView list = (ListView) findViewById(R.id.listView7);

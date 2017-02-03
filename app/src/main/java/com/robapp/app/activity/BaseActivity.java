@@ -164,7 +164,7 @@ public class BaseActivity extends AppCompatActivity
                 public void selectionCancelled()
                 {}
             });
-            dialog.show(getFragmentManager(),"Selection Comportement");
+            dialog.show(getFragmentManager(),"Select Behavior");
         }
         //The action when the user click on the behavior removal menu item
         // Launch Dialog for selecting a behavior to remove
@@ -189,28 +189,8 @@ public class BaseActivity extends AppCompatActivity
                 public void selectionCancelled()
                 {}
             });
-            dialog.show(getFragmentManager(),"Delete Comportement");
+            dialog.show(getFragmentManager(),"Delete Behavior");
         }
-        //Reset the pan position
-        else if(id == R.id.nav_reset)
-        {
-            try{
-                RoboboManager manager = Utils.getRoboboManager();
-                IRobMovementModule module = manager.getModuleInstance(IRobMovementModule.class);
-                IRobInterfaceModule rob  =   manager.getModuleInstance(IRobInterfaceModule.class);
-                rob.getRobInterface().setOperationMode((byte)1);
-                module.movePan(new Short("20"),25);
-               // module.moveTilt(new Short("20"),180);
-
-            }
-            catch(Exception e)
-            {
-                e.printStackTrace();
-            }
-
-
-        }
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

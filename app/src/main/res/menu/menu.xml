@@ -6,11 +6,11 @@
         <item
             android:id="@+id/nav_bluetooth"
             android:icon="@drawable/ic_menu_bluetooth"
-            android:title="Connexion" />
+            android:title="Connection" />
         <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_folder"
-            android:title="Gérer" />
+            android:title="Import" />
         <item
             android:id="@+id/nav_share"
             android:icon="@android:drawable/ic_menu_share"
@@ -20,12 +20,8 @@
             android:icon="@drawable/ic_menu_download"
             android:title="Download" />
         <item
-            android:id="@+id/nav_reset"
-            android:icon="@drawable/ic_menu_reset"
-            android:title="Reset" />
-        <item
             android:id="@+id/nav_behavior"
-            android:title="Comportements"
+            android:title="Behaviors"
             android:icon="@drawable/ic_menu_behavior"/>
         <item
             android:id="@+id/nav_behavior_delete"
